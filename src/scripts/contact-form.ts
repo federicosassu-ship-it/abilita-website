@@ -139,6 +139,12 @@ export function initContactForm() {
       return;
     }
     renderSummary([]);
+    if (form.dataset.preview === 'true') {
+      status.classList.add('cform__status--info');
+      showStatus('Il modulo è compilato correttamente. In questa anteprima l’invio è disattivato: sul sito pubblicato la richiesta arriverebbe a <a href="mailto:info@abilita.biz">info@abilita.biz</a>.');
+      return;
+    }
+    status.classList.remove('cform__status--info');
     setBusy(true);
 
     const fallback = 'Non siamo riusciti a inviare il messaggio. Riprova tra qualche istante oppure scrivici direttamente a <a href="mailto:info@abilita.biz">info@abilita.biz</a>.';

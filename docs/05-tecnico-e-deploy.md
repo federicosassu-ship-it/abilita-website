@@ -87,6 +87,12 @@ Nessun segreto è necessario né presente nel codice.
    - `https://www.abilita.biz/robots.txt` e `/sitemap-index.xml` raggiungibili
 6. In Google Search Console: invio della nuova sitemap.
 
+### Anteprima per revisioni (GitHub Pages)
+`npm run preview:pages` genera e pubblica un'anteprima sul branch `gh-pages`: https://federicosassu-ship-it.github.io/abilita-website/
+- Esclusa dai motori di ricerca (`noindex`), senza banner cookie, con il modulo in modalità anteprima: la validazione funziona, l'invio è disattivato e la pagina lo dichiara.
+- I link interni vengono adattati alla sottocartella da `scripts/preview-pages.mjs`. La build di produzione non cambia.
+- Per rimuoverla: Settings → Pages → Unpublish, oppure eliminare il branch `gh-pages`.
+
 ### Opzione B — Netlify o Cloudflare Pages
 - Build: `npm run build` · cartella: `dist` · variabile `NODE_VERSION=22`.
 - PHP non è disponibile: impostare `PUBLIC_FORM_ENDPOINT` su un servizio di moduli (es. Formspree o Basin) che risponde in JSON. Il gestore PHP resta inutilizzato. Non fare test con dati reali prima di aver configurato il servizio.

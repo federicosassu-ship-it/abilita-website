@@ -13,7 +13,8 @@
     "qa:form": "bash scripts/qa/test-form-php.sh",
     "qa:e2e": "bash scripts/qa/e2e.sh",
     "qa:a11y": "node scripts/qa/a11y.mjs http://localhost:4321",
-    "qa:screens": "node scripts/qa/screens.mjs http://localhost:4321 qa-screens / 390,1440"
+    "qa:screens": "node scripts/qa/screens.mjs http://localhost:4321 qa-screens / 390,1440",
+    "preview:pages": "bash scripts/publish-preview.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.6",

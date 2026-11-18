@@ -3,8 +3,9 @@ import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { services } from '../data/services';
 import { primaryNav, primaryCta, company, whatsappUrl } from '../data/site';
+import { pathWithoutBase } from '../data/paths';
 
-const path = Astro.url.pathname;
+const path = pathWithoutBase(Astro.url.pathname);
 const isCurrent = (href: string) => path === href;
 const inSection = (href: string) => path.startsWith(href);
 const servicesActive = inSection('/servizi/');

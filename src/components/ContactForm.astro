@@ -9,6 +9,9 @@
 import Icon from './Icon.astro';
 import { inquiryTopics } from '../data/services';
 import { config, company, legalLinks } from '../data/site';
+
+// Anteprime (es. GitHub Pages): nessun gestore PHP disponibile, l'invio viene disattivato
+const isPreview = import.meta.env.PUBLIC_PREVIEW === 'true';
 ---
 <div class="cform-wrap" id="modulo">
   <form
@@ -17,6 +20,7 @@ import { config, company, legalLinks } from '../data/site';
     method="post"
     accept-charset="UTF-8"
     data-contact-form
+    data-preview={isPreview ? 'true' : undefined}
     aria-describedby="cform-intro"
   >
     <p class="cform__intro" id="cform-intro">Tutti i campi sono obbligatori, salvo dove indicato.</p>
@@ -79,6 +83,12 @@ import { config, company, legalLinks } from '../data/site';
     </div>
     <input type="hidden" name="ts" value="" data-ts />
     <input type="hidden" name="pagina" value="/contatti/" data-page />
+
+    {isPreview && (
+      <p class="cform__preview">
+        <strong>Anteprima:</strong> qui l’invio è disattivato. Sul sito pubblicato i messaggi arrivano a {company.email}.
+      </p>
+    )}
 
     <div class="cform__footer">
       <p class="cform__privacy">
@@ -176,7 +186,14 @@ import { config, company, legalLinks } from '../data/site';
   .cform[aria-busy='true'] .cform__spinner { display: inline-flex; }
   .cform[aria-busy='true'] :global(.cform__arrow) { display: none; }
 
+  .cform__preview {
+    padding: var(--sp-3) var(--sp-4);
+    border-left: 4px solid var(--c-blue);
+    background: var(--c-blue-tint);
+    font-size: var(--step--1);
+  }
   .cform__status:empty { display: none; }
+  .cform__status--info { border-left-color: var(--c-blue) !important; background: var(--c-blue-tint) !important; }
   .cform__status {
     padding: var(--sp-4) var(--sp-5);
     border-left: 4px solid var(--c-error);

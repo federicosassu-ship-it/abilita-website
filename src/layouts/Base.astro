@@ -9,6 +9,7 @@ import instrumentLatin from '@fontsource-variable/instrument-sans/files/instrume
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { company, config } from '../data/site';
+import { pathWithoutBase } from '../data/paths';
 
 export interface Crumb { label: string; href: string }
 interface Props {
@@ -25,7 +26,8 @@ interface Props {
 
 const { title, description, ogImage = 'default', noindex = false, breadcrumbs, schema = [], legacyRedirects = false } = Astro.props;
 const site = Astro.site ?? new URL(config.siteUrl);
-const canonical = new URL(Astro.url.pathname, site).href;
+const canonical = new URL(pathWithoutBase(Astro.url.pathname), site).href;
+const base = import.meta.env.BASE_URL;
 const ogUrl = new URL(`/og/${ogImage}.png`, site).href;
 const robots = noindex || config.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
 
@@ -108,13 +110,15 @@ const iubConfig = {
 
     <script is:inline>document.documentElement.classList.add('js');</script>
     {legacyRedirects && (
-      <script is:inline>
+      <script is:inline define:vars={{ base }}>
         (function () {
-          var map = { home: '/', chi_siamo: '/chi-siamo/', e_commerce: '/servizi/e-commerce/', food_marketing: '/servizi/food-marketing/', digital_advertising: '/servizi/digital-advertising/', partner: '/network/', lavora_con_noi: '/lavora-con-noi/', contatti: '/contatti/' };
+          var map = { home: '', chi_siamo: 'chi-siamo/', e_commerce: 'servizi/e-commerce/', food_marketing: 'servizi/food-marketing/', digital_advertising: 'servizi/digital-advertising/', partner: 'network/', lavora_con_noi: 'lavora-con-noi/', contatti: 'contatti/' };
           var p = new URLSearchParams(location.search).get('p');
           var h = location.hash.replace('#', '');
-          var target = (p && map[p]) || (map[h] && h !== 'home' ? map[h] : null);
-          if (target && target !== location.pathname) location.replace(target);
+          var key = (p && p in map) ? p : (h in map && h !== 'home' ? h : null);
+          if (key === null) return;
+          var target = base + map[key];
+          if (target !== location.pathname) location.replace(target);
         })();
       </script>
     )}
