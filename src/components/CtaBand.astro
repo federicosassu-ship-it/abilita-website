@@ -1,0 +1,75 @@
+---
+/**
+ * Chiusura di pagina orientata alla conversione: titolo, testo, CTA principale,
+ * contatto diretto e "cosa succede dopo" per ridurre l'incertezza.
+ */
+import Icon from './Icon.astro';
+import Steps from './Steps.astro';
+import { company, whatsappUrl } from '../data/site';
+
+interface Props {
+  title: string;
+  text: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  position: string;
+  showNextSteps?: boolean;
+}
+const {
+  title,
+  text,
+  ctaLabel = 'Parliamo del tuo progetto',
+  ctaHref = '/contatti/',
+  position,
+  showNextSteps = true,
+} = Astro.props;
+
+const nextSteps = [
+  { title: 'Ci scrivi', text: 'Tre campi obbligatori e qualche riga sul progetto, oppure un messaggio su WhatsApp.' },
+  { title: 'Ti ricontattiamo', text: 'Leggiamo la richiesta e fissiamo con te un primo confronto.' },
+  { title: 'Valutiamo insieme', text: 'Se c’è spazio per lavorare insieme, prepariamo una proposta su misura.' },
+];
+---
+<section class="cta-band surface-blue on-blue" aria-labelledby={`cta-${position}`}>
+  <div class="container cta-band__grid">
+    <div class="cta-band__text">
+      <p class="eyebrow">Primo passo</p>
+      <h2 id={`cta-${position}`} set:html={title} />
+      <p class="lead">{text}</p>
+      <div class="btn-row">
+        <a class="btn btn--light" href={ctaHref} data-track="cta_click" data-track-props={JSON.stringify({ posizione: position, etichetta: ctaLabel })}>
+          {ctaLabel} <Icon name="arrow-right" />
+        </a>
+        <a class="link-arrow" href={whatsappUrl} rel="noopener" data-track="whatsapp_click" data-track-props={JSON.stringify({ posizione: position })}>
+          <Icon name="chat" /> Scrivici su WhatsApp
+        </a>
+      </div>
+      <p class="cta-band__mail">Oppure scrivi a <a href={`mailto:${company.email}`} data-track="email_click" data-track-props={JSON.stringify({ indirizzo: 'info', posizione: position })}>{company.email}</a></p>
+    </div>
+    {showNextSteps && (
+      <div class="cta-band__steps">
+        <p class="cta-band__steps-title" id={`dopo-${position}`}>Cosa succede dopo</p>
+        <Steps items={nextSteps} surface="blue" columns={3} label="Cosa succede dopo il primo contatto" />
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .cta-band { padding-block: var(--section-y); position: relative; overflow: hidden; }
+  .cta-band__grid { display: grid; gap: var(--sp-8); }
+  .cta-band__text { display: grid; gap: var(--sp-5); justify-items: start; }
+  .cta-band__text h2 { max-width: 16ch; }
+  .cta-band__text .lead { max-width: 46ch; }
+  .cta-band__mail { font-size: var(--step--1); }
+  .cta-band__mail a { color: var(--c-white); }
+  .cta-band__steps-title { font-weight: 600; font-size: var(--step--1); margin-bottom: var(--sp-2); }
+  .cta-band__steps :global(.steps) { grid-template-columns: 1fr; }
+  .cta-band__steps :global(.steps__item) { grid-template-columns: 3rem 1fr; }
+  .cta-band__steps :global(.steps__num) { grid-row: span 2; margin-bottom: 0; }
+  @media (min-width: 64rem) {
+    .cta-band__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: start; }
+    .cta-band__text { grid-column: 1 / span 6; }
+    .cta-band__steps { grid-column: 8 / span 5; }
+  }
+</style>

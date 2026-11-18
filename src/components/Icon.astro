@@ -1,0 +1,41 @@
+---
+/**
+ * Set di icone lineari Abilita: griglia 24px, tratto 1.75px, terminazioni squadrate
+ * (coerenti con i pixel del logo). Decorative per default: il significato è nel testo vicino.
+ */
+type Name =
+  | 'arrow-right' | 'arrow-up-right' | 'chevron-down' | 'menu' | 'close'
+  | 'mail' | 'chat' | 'pin' | 'check' | 'alert' | 'plus' | 'download';
+
+interface Props { name: Name; class?: string; label?: string }
+const { name, class: className = '', label } = Astro.props;
+
+const paths: Record<Name, string> = {
+  'arrow-right': 'M4 12h15M13.5 6.5 19 12l-5.5 5.5',
+  'arrow-up-right': 'M7 17 17 7M8.5 7H17v8.5',
+  'chevron-down': 'm6 9.5 6 6 6-6',
+  menu: 'M4 7.5h16M4 12h16M4 16.5h16',
+  close: 'm6 6 12 12M18 6 6 18',
+  mail: 'M3.5 6h17v12h-17zM3.5 6.5 12 13l8.5-6.5',
+  chat: 'M4 5h16v11H10l-4.5 3.5V16H4z',
+  pin: 'M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 1 1 13 0c0 5.4-6.5 11-6.5 11zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z',
+  check: 'm4.5 12.5 4.5 4.5 10.5-10.5',
+  alert: 'M12 3.5 2.5 20h19zM12 10v4.5M12 17v.5',
+  plus: 'M12 5v14M5 12h14',
+  download: 'M12 4v11M7 10.5l5 5 5-5M5 19.5h14',
+};
+const isArrow = name === 'arrow-right' || name === 'arrow-up-right';
+---
+<svg
+  class:list={['icon', `icon--${name}`, { 'icon--arrow': isArrow }, className]}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="square"
+  stroke-linejoin="miter"
+  aria-hidden={label ? undefined : 'true'}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  focusable="false"
+><path d={paths[name]} /></svg>

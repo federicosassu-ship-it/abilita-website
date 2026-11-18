@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PixelField from '../components/PixelField.astro';
+import { services } from '../data/services';
+---
+<Base title="Pagina non trovata | Abilita" description="La pagina che cerchi non esiste o è stata spostata con il nuovo sito di Abilita." noindex>
+  <section class="nf" aria-labelledby="titolo-pagina">
+    <div class="container nf__grid">
+      <div class="nf__text">
+        <p class="eyebrow"><span class="eyebrow__num">404</span>Pagina non trovata</p>
+        <h1 id="titolo-pagina">Questa pagina <em>non esiste più</em>.</h1>
+        <p class="lead">Il sito di Abilita è stato rinnovato e alcuni indirizzi sono cambiati. Ecco da dove ripartire:</p>
+        <ul class="nf__links" role="list">
+          <li><a href="/">Home</a></li>
+          {services.map((s) => <li><a href={`/servizi/${s.slug}/`}>{s.name}</a></li>)}
+          <li><a href="/chi-siamo/">Chi siamo</a></li>
+          <li><a href="/contatti/">Contatti</a></li>
+        </ul>
+        <a class="btn" href="/">Torna alla home <Icon name="arrow-right" /></a>
+      </div>
+      <div class="nf__visual"><PixelField variant="hero" seed={404} /></div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { padding-block: var(--section-y); }
+  .nf__grid { display: grid; gap: var(--sp-8); align-items: center; }
+  .nf__text { display: grid; gap: var(--sp-5); justify-items: start; }
+  .nf__text h1 { max-width: 14ch; }
+  .nf__links { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: var(--sp-2) var(--sp-5); }
+  .nf__links a { display: inline-flex; min-height: 2.75rem; align-items: center; font-weight: 500; }
+  .nf__visual { width: min(100%, 18rem); }
+  @media (min-width: 64rem) {
+    .nf__grid { grid-template-columns: 7fr 4fr; }
+    .nf__visual { justify-self: end; }
+  }
+</style>

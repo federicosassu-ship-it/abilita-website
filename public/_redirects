@@ -1,0 +1,5 @@
+# Redirect per Netlify / Cloudflare Pages (se il sito viene ospitato lì invece che su Aruba).
+# I parametri ?p= del vecchio sito sono gestiti anche da uno script nella home.
+/pagine/sitemap.xml   /sitemap-index.xml   301
+/pagine/process.php   /                    301
+/index.php            /                    301

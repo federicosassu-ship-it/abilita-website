@@ -1,0 +1,196 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import Steps from '../../components/Steps.astro';
+import Faq from '../../components/Faq.astro';
+import PixelGlyph from '../../components/PixelGlyph.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { services, getService, type Service } from '../../data/services';
+import { config } from '../../data/site';
+
+export function getStaticPaths() {
+  return services.map((s) => ({ params: { slug: s.slug }, props: { service: s } }));
+}
+
+const { service: s } = Astro.props as { service: Service };
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Servizi', href: '/servizi/' },
+  { label: s.name, href: `/servizi/${s.slug}/` },
+];
+const contactHref = `/contatti/?ambito=${s.slug}`;
+const related = s.related.slugs.map(getService);
+const benefitGlyphs = ['target', 'measure', 'growth'] as const;
+
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: s.name,
+  serviceType: s.name,
+  description: s.seo.description,
+  url: `${config.siteUrl}/servizi/${s.slug}/`,
+  provider: { '@id': `${config.siteUrl}/#organizzazione` },
+  areaServed: { '@type': 'Country', name: 'Italia' },
+  audience: { '@type': 'BusinessAudience', name: 'Imprese e organizzazioni della filiera agroalimentare' },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: s.name,
+    itemListElement: s.capabilities.map((c) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: c.title, description: c.text } })),
+  },
+}];
+---
+<Base title={s.seo.title} description={s.seo.description} ogImage={s.slug} breadcrumbs={crumbs} schema={schema}>
+  <PageHero breadcrumbs={crumbs} label={s.name} title={s.hero.title} lead={s.hero.lead} pattern={s.pattern} seed={s.number.length * 13}>
+    <div slot="actions" class="btn-row">
+      <a class="btn" href={contactHref} data-track="cta_click" data-track-props={JSON.stringify({ posizione: `servizio_hero_${s.slug}`, etichetta: s.cta.label })}>
+        {s.cta.label} <Icon name="arrow-right" />
+      </a>
+      <a class="link-arrow" href="#attivita">Cosa facciamo <Icon name="arrow-right" /></a>
+    </div>
+  </PageHero>
+
+  <section class="section section--rule" aria-labelledby="sfida">
+    <div class="container grid-12">
+      <div class="challenge__head">
+        <SectionHead id="sfida" num="01" label="La sfida" title={s.challenge.title} width="wide" />
+      </div>
+      <div class="challenge__body prose" data-reveal>
+        {s.challenge.body.map((p) => <p>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section surface-white" aria-labelledby="attivita">
+    <div class="container grid-12">
+      <div class="caps__head">
+        <SectionHead id="attivita" num="02" label="Cosa facciamo" title="Cinque attività, <em>un solo obiettivo</em>." />
+      </div>
+      <ol class="caps" role="list">
+        {s.capabilities.map((c, i) => (
+          <li class="caps__item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <span class="caps__num tabular" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="caps__title">{c.title}</h3>
+            <p class="caps__text">{c.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section surface-ink on-ink" aria-labelledby="benefici">
+    <div class="container">
+      <SectionHead id="benefici" num="03" label="Cosa cambia per te" title="Il valore, <em>in concreto</em>." />
+      <ul class="benefits" role="list">
+        {s.benefits.map((b, i) => (
+          <li class="benefits__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <PixelGlyph name={benefitGlyphs[i % benefitGlyphs.length]} class="benefits__glyph" />
+            <h3>{b.title}</h3>
+            <p>{b.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="processo">
+    <div class="container">
+      <div class="process__head">
+        <SectionHead id="processo" num="04" label="Come lavoriamo" title="Dall’analisi <em>ai risultati</em>." />
+      </div>
+      <Steps items={s.process} label={`Fasi del servizio ${s.name}`} />
+    </div>
+  </section>
+
+  <section class="section surface-stone" aria-labelledby="insieme">
+    <div class="container grid-12">
+      <div class="related__head">
+        <SectionHead id="insieme" num="05" label="Con gli altri servizi" title="Più efficace, <em>se integrato</em>." lead={s.related.text} />
+      </div>
+      <ul class="related" role="list">
+        {related.map((r) => (
+          <li class="related__item" data-reveal>
+            <span class="related__num tabular" aria-hidden="true">{r.number}</span>
+            <h3 class="related__name"><a href={`/servizi/${r.slug}/`} data-track="servizio_click" data-track-props={JSON.stringify({ servizio: r.slug, posizione: `correlati_${s.slug}` })}>{r.name}</a></h3>
+            <p class="related__text">{r.home.tagline}</p>
+            <Icon name="arrow-right" class="related__arrow" />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="domande">
+    <div class="container grid-12">
+      <div class="faq__head">
+        <SectionHead id="domande" num="06" label="Domande frequenti" title="Domande <em>e risposte</em>." />
+      </div>
+      <div class="faq__body">
+        <Faq items={s.faq} />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand position={`servizio_${s.slug}`} title={s.cta.title} text={s.cta.text} ctaLabel={s.cta.label} ctaHref={contactHref} />
+</Base>
+
+<style>
+  .challenge__head, .challenge__body, .caps__head, .caps, .related__head, .related, .faq__head, .faq__body { grid-column: 1 / -1; }
+  .challenge__body { font-size: var(--step-1); line-height: 1.55; color: var(--c-ink-2); }
+  @media (min-width: 64rem) {
+    .challenge__head { grid-column: 1 / span 6; }
+    .challenge__body { grid-column: 8 / span 5; padding-top: var(--sp-8); }
+    .caps__head { grid-column: 1 / span 4; }
+    .caps { grid-column: 6 / span 7; }
+    .related__head { grid-column: 1 / span 5; }
+    .related { grid-column: 7 / span 6; }
+    .faq__head { grid-column: 1 / span 4; }
+    .faq__body { grid-column: 6 / span 7; }
+  }
+
+  .caps { list-style: none; padding: 0; border-top: 1px solid var(--c-ink); }
+  .caps__item {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    column-gap: var(--sp-4);
+    row-gap: var(--sp-2);
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .caps__num { grid-row: span 2; font-size: var(--step--1); font-weight: 600; color: var(--c-muted); padding-top: 0.45rem; }
+  .caps__title { font-size: var(--step-2); }
+  .caps__text { color: var(--c-ink-2); max-width: 52ch; }
+
+  .benefits { list-style: none; padding: 0; display: grid; gap: var(--sp-7) var(--col-gap); margin-top: var(--sp-8); }
+  .benefits__item { display: grid; gap: var(--sp-3); align-content: start; border-top: 1px solid var(--c-line-ink); padding-top: var(--sp-5); }
+  .benefits__item :global(.benefits__glyph) { color: var(--c-white); --glyph-accent: var(--c-magenta-soft); margin-bottom: var(--sp-3); }
+  .benefits__item h3 { font-size: var(--step-2); }
+  .benefits__item p { color: var(--c-blue-soft); max-width: 34ch; }
+  @media (min-width: 48rem) { .benefits { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .process__head { margin-bottom: var(--sp-8); }
+
+  .related { list-style: none; padding: 0; display: grid; gap: var(--sp-4); }
+  .related__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    column-gap: var(--sp-4);
+    align-items: center;
+    padding: var(--sp-5);
+    background: var(--c-paper);
+    border: 1px solid var(--c-line);
+    transition: border-color var(--dur-2) var(--ease-out), background-color var(--dur-2);
+  }
+  .related__item:hover { border-color: var(--c-ink); background: var(--c-white); }
+  .related__item:has(a:focus-visible) { outline: 2px solid var(--c-focus); outline-offset: 3px; }
+  .related__num { grid-row: span 2; font-size: var(--step--1); color: var(--c-muted); font-weight: 600; align-self: start; padding-top: 0.4rem; }
+  .related__name { font-size: var(--step-3); }
+  .related__name a { color: var(--c-ink); text-decoration: none; }
+  .related__name a::after { content: ''; position: absolute; inset: 0; }
+  .related__name a:focus-visible { outline: none; }
+  .related__text { grid-column: 2; color: var(--c-ink-2); }
+  .related__item :global(.related__arrow) { grid-column: 3; grid-row: 1 / span 2; width: 1.5rem; height: 1.5rem; transition: transform var(--dur-2) var(--ease-out); }
+  .related__item:hover :global(.related__arrow) { transform: translateX(4px); }
+</style>

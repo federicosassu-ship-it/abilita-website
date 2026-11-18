@@ -1,0 +1,209 @@
+---
+/**
+ * "Campo di pixel": sistema grafico derivato dalla "A" del logo Abilita, dove la lettera
+ * si scompone in pixel. Ogni variante è una composizione astratta con un significato:
+ *  hero      il campo coltivato che diventa dato (filari → pixel)
+ *  about     filari orizzontali che si dissolvono (identità)
+ *  ecommerce assortimento ordinato e flusso degli ordini
+ *  food      un nucleo di valore che si diffonde
+ *  ads       anelli concentrici verso un obiettivo
+ *  network   più competenze collegate a un unico centro
+ *  careers   colonne che crescono
+ *  contact   due interlocutori e lo scambio tra loro
+ * Generato in fase di build con un generatore pseudo-casuale deterministico: nessun JS nel browser.
+ */
+type Variant = 'hero' | 'about' | 'ecommerce' | 'food' | 'ads' | 'network' | 'careers' | 'contact';
+type Surface = 'light' | 'dark' | 'blue';
+
+interface Props {
+  variant: Variant;
+  surface?: Surface;
+  animate?: boolean;
+  class?: string;
+  seed?: number;
+}
+const { variant, surface = 'light', animate = false, class: className = '', seed = 7 } = Astro.props;
+
+const palettes = {
+  light: { a: '#0D1F30', b: '#0F70B7', t: '#C5DAEC', x: '#E61873' },
+  dark: { a: '#FFFFFF', b: '#5FA3DA', t: 'rgba(255,255,255,0.2)', x: '#F06BA5' },
+  blue: { a: '#FFFFFF', b: '#0D1F30', t: 'rgba(255,255,255,0.3)', x: '#0D1F30' },
+} as const;
+const P = palettes[surface];
+
+// Generatore deterministico (mulberry32)
+let s = seed >>> 0;
+const rand = () => {
+  s = (s + 0x6d2b79f5) >>> 0;
+  let t = s;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+
+type Cell = { c: number; r: number; size: number; fill: string; order: number };
+const cells: Cell[] = [];
+const add = (c: number, r: number, size: number, fill: string, order = 0) => cells.push({ c, r, size, fill, order });
+
+let cols = 12;
+let rows = 12;
+
+if (variant === 'hero') {
+  cols = 12; rows = 14;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const u = c / (cols - 1), v = r / (rows - 1);
+      const furrow = r % 3 === 2;
+      const d = (1 - u) * 0.62 + v * 0.62 - 0.12;
+      const order = (u * 0.55 + (1 - v) * 0.45);
+      const band = Math.floor(r / 3) % 2 === 0 ? P.a : P.b;
+      if (furrow) { if (d < 0.6 && rand() < 0.06) add(c, r, 4, P.x, order); continue; }
+      if (d > 0.74) add(c, r, 8, rand() < 0.1 ? P.t : band, order);
+      else if (d > 0.3) {
+        const p = (d - 0.3) / 0.44;
+        if (rand() < 0.25 + p * 0.65) add(c, r, rand() < p ? 8 : 6, rand() < 0.16 ? P.x : rand() < 0.3 ? P.t : band, order);
+      } else if (rand() < 0.13) add(c, r, rand() < 0.5 ? 5 : 4, rand() < 0.55 ? P.x : P.b, order);
+    }
+  }
+}
+
+if (variant === 'about') {
+  cols = 20; rows = 7;
+  for (let r = 0; r < rows; r++) {
+    if (r % 2 === 1) continue;
+    for (let c = 0; c < cols; c++) {
+      const u = c / (cols - 1);
+      const fill = r === 2 ? P.b : r === 4 ? P.t : P.a;
+      if (u < 0.55) add(c, r, 8, fill, u);
+      else if (rand() < 1.15 - u) add(c, r, rand() < 0.5 ? 6 : 5, rand() < 0.22 ? P.x : fill, u);
+    }
+  }
+}
+
+if (variant === 'ecommerce') {
+  cols = 12; rows = 10;
+  const highlights = new Set(['0-0', '2-1', '1-2']);
+  for (let r = 0; r < rows - 2; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (c % 4 === 3 || r % 3 === 2) continue;
+      const key = `${Math.floor(c / 4)}-${Math.floor(r / 3)}`;
+      add(c, r, 8, highlights.has(key) ? P.a : P.t, (c + r) / 20);
+    }
+  }
+  for (let c = 0; c < cols; c += 1) {
+    if (c % 2 === 0) add(c, rows - 1, c === cols - 2 ? 8 : 4, c === cols - 2 ? P.x : P.b, 0.6 + c / 30);
+  }
+}
+
+if (variant === 'food') {
+  cols = 12; rows = 12;
+  const cx = 4.5, cy = 6.5, maxd = Math.hypot(cols, rows) * 0.62;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const d = Math.hypot(c - cx, r - cy) / maxd;
+      if (d < 0.2) add(c, r, 8, P.a, d);
+      else if (d < 0.42) { if (rand() < 0.85) add(c, r, 8, P.b, d); }
+      else if (d < 0.72) { if (rand() < 0.36) add(c, r, rand() < 0.5 ? 6 : 8, rand() < 0.22 ? P.x : P.t, d); }
+      else if (rand() < 0.09) add(c, r, 4, P.x, d);
+    }
+  }
+}
+
+if (variant === 'ads') {
+  cols = 13; rows = 13;
+  const m = 6;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const ring = Math.max(Math.abs(c - m), Math.abs(r - m));
+      const diag = Math.abs(c - m) === Math.abs(r - m);
+      const order = 1 - ring / 6;
+      if (ring === 0) add(c, r, 8, P.x, order);
+      else if (ring === 2) { if (rand() < 0.92) add(c, r, 8, P.a, order); }
+      else if (ring === 4) { if (rand() < 0.72) add(c, r, 8, P.b, order); }
+      else if (ring === 6) { if (rand() < 0.5) add(c, r, 7, P.t, order); }
+      else if (diag) add(c, r, 4, P.b, order);
+    }
+  }
+}
+
+if (variant === 'network') {
+  cols = 13; rows = 11;
+  const hubs = [[5, 4], [0, 0], [11, 1], [0, 8], [10, 8], [6, 9]] as const;
+  const inHub = (c: number, r: number) => hubs.findIndex(([hc, hr]) => c >= hc && c <= hc + 1 && r >= hr && r <= hr + 1);
+  const linked = new Set<string>();
+  const [cx, cy] = [hubs[0][0] + 0.5, hubs[0][1] + 0.5];
+  for (const [hc, hr] of hubs.slice(1)) {
+    const tx = hc + 0.5, ty = hr + 0.5;
+    const steps = Math.max(Math.abs(tx - cx), Math.abs(ty - cy));
+    for (let i = 1; i < steps; i++) {
+      const c = Math.round(cx + ((tx - cx) * i) / steps), r = Math.round(cy + ((ty - cy) * i) / steps);
+      if (i % 2 === 0) linked.add(`${c}-${r}`);
+    }
+  }
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const h = inHub(c, r);
+      if (h === 0) add(c, r, 8, c === 6 && r === 4 ? P.x : P.a, 0);
+      else if (h > 0) add(c, r, 8, h % 2 ? P.b : P.t, 0.6);
+      else if (linked.has(`${c}-${r}`)) add(c, r, 4, P.a, 0.3);
+    }
+  }
+}
+
+if (variant === 'careers') {
+  cols = 12; rows = 10;
+  for (let c = 0; c < cols; c++) {
+    const h = Math.min(rows, Math.round(2 + c * 0.62 + rand() * 1.4));
+    for (let r = rows - h; r < rows; r++) {
+      const top = r === rows - h;
+      add(c, r, 8, top && c > 6 ? P.x : r < rows - h + 2 ? P.b : P.a, c / cols);
+    }
+  }
+}
+
+if (variant === 'contact') {
+  cols = 14; rows = 8;
+  for (let r = 2; r < 6; r++) for (let c = 0; c < 4; c++) add(c, r, 8, P.a, 0);
+  for (let r = 2; r < 6; r++) for (let c = 10; c < 14; c++) add(c, r, 8, (r + c) % 5 === 0 ? P.t : P.b, 0.8);
+  [[5, 3, P.x], [7, 3, P.b], [6, 4, P.b], [8, 4, P.x], [5, 5, P.t]].forEach(([c, r, f], i) => add(c as number, r as number, 5, f as string, 0.3 + i * 0.1));
+}
+
+const unit = 10;
+const w = cols * unit;
+const h = rows * unit;
+---
+<svg
+  class:list={['pixel-field', `pixel-field--${variant}`, { 'pixel-field--animate': animate }, className]}
+  viewBox={`0 0 ${w} ${h}`}
+  aria-hidden="true"
+  focusable="false"
+>
+  {cells.map((cell) => {
+    const o = (unit - cell.size) / 2;
+    return (
+      <rect
+        x={cell.c * unit + o}
+        y={cell.r * unit + o}
+        width={cell.size}
+        height={cell.size}
+        fill={cell.fill}
+        style={animate ? `--d:${Math.round(cell.order * 900)}ms` : undefined}
+      />
+    );
+  })}
+</svg>
+
+<style>
+  .pixel-field { width: 100%; height: auto; overflow: visible; }
+  @media (prefers-reduced-motion: no-preference) {
+    .pixel-field--animate rect {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: px-in 620ms var(--ease-out) both;
+      animation-delay: var(--d, 0ms);
+    }
+  }
+  @keyframes px-in {
+    from { opacity: 0; transform: scale(0.25); }
+  }
+</style>

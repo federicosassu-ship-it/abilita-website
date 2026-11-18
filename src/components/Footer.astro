@@ -1,0 +1,135 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { services } from '../data/services';
+import { company, whatsappUrl, legalLinks, config } from '../data/site';
+
+const year = new Date().getFullYear();
+const a = company.address;
+const socials = Object.entries(company.social).filter(([, url]) => Boolean(url)) as [string, string][];
+const socialLabels: Record<string, string> = { instagram: 'Instagram', facebook: 'Facebook', linkedin: 'LinkedIn' };
+---
+<footer class="site-footer on-ink">
+  <div class="container">
+    <div class="site-footer__top">
+      <div class="site-footer__brand">
+        <a href="/" class="site-footer__logo-link" aria-label="Abilita — vai alla home">
+          <Logo variant="white" class="site-footer__logo" />
+        </a>
+        <p class="site-footer__claim">Strategia, tecnologia e marketing per la filiera agroalimentare.</p>
+        <a class="btn btn--light" href="/contatti/" data-track="cta_click" data-track-props='{"posizione":"footer"}'>
+          Parliamo del tuo progetto <Icon name="arrow-right" />
+        </a>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Servizi">
+        <h2 class="site-footer__title">Servizi</h2>
+        <ul role="list">
+          {services.map((s) => <li><a href={`/servizi/${s.slug}/`}>{s.name}</a></li>)}
+          <li><a href="/servizi/">Panoramica</a></li>
+        </ul>
+      </nav>
+
+      <nav class="site-footer__nav" aria-label="Azienda">
+        <h2 class="site-footer__title">Azienda</h2>
+        <ul role="list">
+          <li><a href="/chi-siamo/">Chi siamo</a></li>
+          <li><a href="/network/">Network</a></li>
+          <li><a href="/lavora-con-noi/">Lavora con noi</a></li>
+          <li><a href="/contatti/">Contatti</a></li>
+        </ul>
+      </nav>
+
+      <div class="site-footer__nav">
+        <h2 class="site-footer__title">Contatti</h2>
+        <ul role="list" class="site-footer__contacts">
+          <li><a href={`mailto:${company.email}`} data-track="email_click" data-track-props='{"indirizzo":"info","posizione":"footer"}'>{company.email}</a></li>
+          <li><a href={whatsappUrl} rel="noopener" data-track="whatsapp_click" data-track-props='{"posizione":"footer"}'>WhatsApp <span class="nowrap">{company.whatsapp.display}</span></a></li>
+          <li><span class="site-footer__muted">Partnership</span><br /><a href={`mailto:${company.partnershipEmail}`} data-track="email_click" data-track-props='{"indirizzo":"marketing","posizione":"footer"}'>{company.partnershipEmail}</a></li>
+        </ul>
+        {socials.length > 0 && (
+          <ul role="list" class="site-footer__social">
+            {socials.map(([key, url]) => <li><a href={url} rel="noopener">{socialLabels[key] ?? key}</a></li>)}
+          </ul>
+        )}
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <p class="site-footer__legal">
+        <span>{company.legalName}</span>
+        <span>Sede legale: {a.street}, {a.postalCode} {a.city} ({a.province}), {a.region}</span>
+        <span>P.IVA {company.vat}</span>
+        <span>REA {company.rea}</span>
+        {company.shareCapital && <span>Capitale sociale {company.shareCapital}</span>}
+        {company.pec && <span>PEC {company.pec}</span>}
+      </p>
+      <ul class="site-footer__policies" role="list">
+        <li><a href={legalLinks.privacy} rel="noopener">Privacy policy</a></li>
+        <li><a href={legalLinks.cookie} rel="noopener">Cookie policy</a></li>
+        {config.iubenda.banner && <li><a href="#" class="iubenda-cs-preferences-link" role="button">Preferenze cookie</a></li>}
+        <li><span>© {year} {company.legalName}</span></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    background: var(--c-ink);
+    color: var(--c-white);
+    padding-block: var(--sp-9) var(--sp-6);
+    font-size: var(--step--1);
+  }
+  .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--gradient-brand);
+  }
+  .site-footer__top {
+    display: grid;
+    gap: var(--sp-7) var(--col-gap);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-bottom: var(--sp-8);
+  }
+  .site-footer__brand { grid-column: 1 / -1; display: grid; gap: var(--sp-5); justify-items: start; max-width: 26rem; }
+  .site-footer__logo-link { display: inline-flex; color: var(--c-white); }
+  .site-footer__brand :global(.site-footer__logo) { width: 9rem; color: var(--c-white); }
+  .site-footer__claim { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.25; }
+  .site-footer__title { font-family: var(--font-sans); font-size: var(--step--1); font-weight: 600; color: var(--c-blue-soft); margin-bottom: var(--sp-4); letter-spacing: 0.01em; }
+  .site-footer__nav ul { list-style: none; padding: 0; display: grid; gap: var(--sp-2); }
+  .site-footer a:not(.btn) {
+    color: var(--c-white);
+    text-decoration: none;
+    display: inline-block;
+    padding-block: 0.3rem;
+    font-size: var(--step-0);
+  }
+  .site-footer a:not(.btn):hover { text-decoration: underline; text-underline-offset: 0.2em; color: var(--c-white); }
+  .site-footer__contacts a { overflow-wrap: anywhere; }
+  .site-footer__muted { color: var(--c-blue-soft); }
+  .site-footer__social { margin-top: var(--sp-4); display: flex !important; gap: var(--sp-4) !important; }
+  .site-footer__bottom {
+    display: grid;
+    gap: var(--sp-4);
+    padding-top: var(--sp-5);
+    border-top: 1px solid var(--c-line-ink);
+    color: var(--c-blue-soft);
+  }
+  .site-footer__legal { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; line-height: 1.6; }
+  .site-footer__policies { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0 1.25rem; align-items: center; }
+  .site-footer__policies a:not(.btn) { font-size: var(--step--1); color: var(--c-blue-soft); min-height: 2.75rem; display: inline-flex; align-items: center; padding: 0; }
+  .site-footer__policies a:not(.btn):hover { color: var(--c-white); }
+
+  @media (min-width: 48rem) {
+    .site-footer__top { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 64rem) {
+    .site-footer__top { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; }
+    .site-footer__brand { grid-column: auto; }
+    .site-footer__bottom { grid-template-columns: 1fr auto; align-items: center; }
+  }
+</style>

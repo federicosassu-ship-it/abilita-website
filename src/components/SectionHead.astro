@@ -1,0 +1,31 @@
+---
+/**
+ * Intestazione di sezione: occhiello numerato con il pixel del logo, titolo, testo introduttivo.
+ * Il titolo accetta <em> per l'enfasi editoriale in corsivo.
+ */
+interface Props {
+  id?: string;
+  num?: string;
+  label: string;
+  title: string;
+  lead?: string;
+  level?: 'h1' | 'h2';
+  class?: string;
+  width?: 'narrow' | 'wide';
+}
+const { id, num, label, title, lead, level = 'h2', class: className = '', width = 'narrow' } = Astro.props;
+const Heading = level;
+---
+<header class:list={['section-head', `section-head--${width}`, className]}>
+  <p class="eyebrow">{num && <span class="eyebrow__num">{num}</span>}{label}</p>
+  <Heading id={id} class="section-head__title" set:html={title} />
+  {lead && <p class="lead section-head__lead">{lead}</p>}
+  <slot />
+</header>
+
+<style>
+  .section-head { display: grid; gap: var(--sp-5); justify-items: start; }
+  .section-head--narrow .section-head__title { max-width: 18ch; }
+  .section-head--wide .section-head__title { max-width: 24ch; }
+  .section-head__lead { max-width: 52ch; }
+</style>

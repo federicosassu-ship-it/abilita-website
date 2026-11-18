@@ -1,0 +1,95 @@
+---
+/**
+ * Progetti / casi studio. Le pagine vengono generate SOLO se esiste almeno un caso
+ * pubblicabile (draft: false, verificato: true, autorizzazioneCliente: true).
+ * Con zero casi non esiste né l'indice né alcun dettaglio.
+ */
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { getService } from '../../data/services';
+
+export async function getStaticPaths() {
+  const items = await getCollection('progetti', ({ data }) => !data.draft && data.verificato && data.autorizzazioneCliente);
+  if (!items.length) return [];
+  return [
+    { params: { slug: undefined }, props: { items, entry: null } },
+    ...items.map((entry) => ({ params: { slug: entry.id }, props: { items, entry } })),
+  ];
+}
+
+const { items, entry } = Astro.props as { items: CollectionEntry<'progetti'>[]; entry: CollectionEntry<'progetti'> | null };
+const indexCrumbs = [{ label: 'Home', href: '/' }, { label: 'Progetti', href: '/progetti/' }];
+const Content = entry ? (await render(entry)).Content : null;
+---
+{entry === null ? (
+  <Base title="Progetti | Abilita" description="Casi studio di Abilita nella filiera agroalimentare: sfide, soluzioni e risultati verificati." breadcrumbs={indexCrumbs}>
+    <PageHero breadcrumbs={indexCrumbs} label="Progetti" title="Progetti <em>e risultati</em>." lead="Alcuni dei progetti realizzati con imprese e organizzazioni della filiera agroalimentare." />
+    <section class="section surface-white">
+      <div class="container">
+        <ul class="cases" role="list">
+          {items.map((p) => (
+            <li class="cases__item">
+              <p class="cases__meta">{p.data.cliente} · {p.data.settore}{p.data.anno ? ` · ${p.data.anno}` : ''}</p>
+              <h2 class="cases__title"><a href={`/progetti/${p.id}/`}>{p.data.titolo}</a></h2>
+              <p class="cases__text">{p.data.sintesi}</p>
+              <p class="cases__services">{p.data.servizi.map((s) => getService(s).name).join(' · ')}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+    <CtaBand position="progetti" title="Vuoi un risultato simile? <em>Parliamone.</em>" text="Raccontaci il tuo punto di partenza." />
+  </Base>
+) : (
+  <Base
+    title={`${entry.data.titolo} | Progetti Abilita`}
+    description={entry.data.sintesi}
+    breadcrumbs={[...indexCrumbs, { label: entry.data.cliente, href: `/progetti/${entry.id}/` }]}
+  >
+    <PageHero
+      breadcrumbs={[...indexCrumbs, { label: entry.data.cliente, href: `/progetti/${entry.id}/` }]}
+      label={`${entry.data.cliente} · ${entry.data.settore}`}
+      title={entry.data.titolo}
+      lead={entry.data.sintesi}
+    />
+    <section class="section surface-white">
+      <div class="container case">
+        <dl class="case__facts">
+          <div><dt>La sfida</dt><dd>{entry.data.sfida}</dd></div>
+          <div><dt>La soluzione</dt><dd>{entry.data.soluzione}</dd></div>
+          <div><dt>Il contributo di Abilita</dt><dd>{entry.data.contributo}</dd></div>
+        </dl>
+        {entry.data.risultati.length > 0 && (
+          <ul class="case__results" role="list">
+            {entry.data.risultati.map((r) => (
+              <li><p class="case__value">{r.valore}</p><p>{r.descrizione}</p><p class="case__source">Fonte: {r.fonte}</p></li>
+            ))}
+          </ul>
+        )}
+        {Content && <div class="prose case__body"><Content /></div>}
+        <a class="link-arrow" href="/progetti/">Tutti i progetti <Icon name="arrow-right" /></a>
+      </div>
+    </section>
+    <CtaBand position={`progetto_${entry.id}`} title="Vuoi un risultato simile? <em>Parliamone.</em>" text="Raccontaci il tuo punto di partenza." />
+  </Base>
+)}
+
+<style>
+  .cases { list-style: none; padding: 0; border-top: 1px solid var(--c-ink); }
+  .cases__item { display: grid; gap: var(--sp-2); padding-block: var(--sp-6); border-bottom: 1px solid var(--c-line); }
+  .cases__meta, .cases__services { font-size: var(--step--1); color: var(--c-muted); }
+  .cases__title { font-size: var(--step-3); }
+  .cases__title a { color: var(--c-ink); text-decoration: none; }
+  .cases__title a:hover { color: var(--c-blue-strong); text-decoration: underline; }
+  .cases__text { color: var(--c-ink-2); max-width: 60ch; }
+  .case { display: grid; gap: var(--sp-8); }
+  .case__facts { display: grid; gap: var(--sp-5); }
+  .case__facts dt { font-weight: 600; }
+  .case__facts dd { margin: 0; color: var(--c-ink-2); max-width: 60ch; }
+  .case__results { list-style: none; padding: 0; display: grid; gap: var(--sp-5); grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+  .case__value { font-family: var(--font-display); font-size: var(--step-4); color: var(--c-blue-strong); }
+  .case__source { font-size: var(--step--2); color: var(--c-muted); }
+</style>

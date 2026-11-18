@@ -1,0 +1,150 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ServiceRows from '../../components/ServiceRows.astro';
+import PixelGlyph from '../../components/PixelGlyph.astro';
+import Icon from '../../components/Icon.astro';
+import CtaBand from '../../components/CtaBand.astro';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Servizi', href: '/servizi/' },
+];
+
+const flow = [
+  { name: 'Food marketing', role: 'Posizionamento', text: 'Definisce a chi ti rivolgi e perché il tuo prodotto merita la scelta.', href: '/servizi/food-marketing/' },
+  { name: 'Digital advertising', role: 'Visibilità', text: 'Porta il messaggio alle persone giuste, con investimenti misurabili.', href: '/servizi/digital-advertising/' },
+  { name: 'E-commerce', role: 'Vendita', text: 'Trasforma l’interesse in ordini, su canali propri e marketplace.', href: '/servizi/e-commerce/' },
+];
+---
+<Base
+  title="Servizi: e-commerce, food marketing e advertising | Abilita"
+  description="E-commerce, food marketing e digital advertising per la filiera agroalimentare: tre servizi che puoi attivare singolarmente o integrare in un unico progetto."
+  ogImage="servizi"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    breadcrumbs={crumbs}
+    label="Servizi"
+    title="Tre leve per crescere sul mercato, <em>in un unico progetto</em>."
+    lead="E-commerce, food marketing e digital advertising: puoi attivarne uno o combinarli. In ogni caso partiamo dai tuoi obiettivi di business e misuriamo i risultati."
+  >
+    <div slot="actions" class="btn-row">
+      <a class="btn" href="/contatti/" data-track="cta_click" data-track-props='{"posizione":"servizi_hero"}'>Parliamo del tuo progetto <Icon name="arrow-right" /></a>
+    </div>
+  </PageHero>
+
+  <section class="section surface-white" aria-label="Elenco dei servizi">
+    <div class="container">
+      <ServiceRows headingLevel="h2" position="servizi" />
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="integrazione">
+    <div class="container">
+      <SectionHead
+        id="integrazione"
+        label="Progetti integrati"
+        title="Quando le leve <em>lavorano insieme</em>."
+        lead="Un posizionamento chiaro rende più efficaci le campagne; campagne mirate portano visite qualificate all’e-commerce; i dati di vendita orientano le scelte successive."
+      />
+      <ol class="flow" role="list">
+        {flow.map((f, i) => (
+          <li class="flow__item" data-reveal style={`--reveal-delay:${i * 100}ms`}>
+            <p class="flow__role"><span class="tabular">{String(i + 1).padStart(2, '0')}</span> {f.role}</p>
+            <h3 class="flow__name"><a href={f.href}>{f.name}</a></h3>
+            <p class="flow__text">{f.text}</p>
+          </li>
+        ))}
+        <li class="flow__item flow__item--loop" data-reveal style="--reveal-delay:300ms">
+          <p class="flow__role"><span class="tabular">04</span> Misura</p>
+          <h3 class="flow__name">Dati e ottimizzazione</h3>
+          <p class="flow__text">I risultati di vendite e campagne tornano nella strategia e la migliorano.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section surface-stone" aria-labelledby="leve-trasversali">
+    <div class="container grid-12">
+      <div class="levers__head">
+        <SectionHead
+          id="leve-trasversali"
+          label="In ogni progetto"
+          title="Oltre ai servizi, <em>due impegni</em>."
+        />
+      </div>
+      <ul class="levers" role="list">
+        <li class="levers__item" data-reveal>
+          <PixelGlyph name="hub" />
+          <h3>Una rete di specialisti</h3>
+          <p>Quando servono competenze specifiche, le troviamo nella nostra rete e le coordiniamo noi. Tu hai sempre un unico riferimento.</p>
+          <a class="link-arrow" href="/network/">Scopri il network <Icon name="arrow-right" /></a>
+        </li>
+        <li class="levers__item" data-reveal style="--reveal-delay:90ms">
+          <PixelGlyph name="overlap" />
+          <h3>Co-investimento e finanza agevolata</h3>
+          <p>Se un progetto ha valore strategico anche per noi, valutiamo di co-investire. E ti aiutiamo a individuare le opportunità di finanza agevolata.</p>
+          <a class="link-arrow" href="/chi-siamo/">Come lavoriamo <Icon name="arrow-right" /></a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    position="servizi"
+    title="Non sai da quale leva partire? <em>Ne parliamo insieme.</em>"
+    text="Descrivici la situazione attuale: ti aiutiamo a capire quali attività hanno senso adesso e quali possono aspettare."
+  />
+</Base>
+
+<style>
+  .flow {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    margin-top: var(--sp-8);
+    counter-reset: flow;
+  }
+  .flow__item {
+    position: relative;
+    display: grid;
+    gap: var(--sp-2);
+    padding: var(--sp-5) 0 var(--sp-6);
+    border-top: 1px solid var(--c-ink);
+  }
+  .flow__item--loop { border-top-style: dashed; }
+  .flow__role { font-size: var(--step--1); font-weight: 600; color: var(--c-magenta-strong); display: flex; gap: 0.6em; }
+  .flow__role .tabular { color: var(--c-muted); }
+  .flow__name { font-size: var(--step-3); }
+  .flow__name a { color: var(--c-ink); text-decoration: none; }
+  .flow__name a:hover { color: var(--c-blue-strong); text-decoration: underline; text-decoration-thickness: 1.5px; }
+  .flow__text { color: var(--c-ink-2); max-width: 32ch; }
+  @media (min-width: 48rem) {
+    .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--col-gap); }
+  }
+  @media (min-width: 64rem) {
+    .flow { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .flow__item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: -5px;
+      right: calc(-1 * var(--col-gap) / 2 - 4px);
+      width: 9px;
+      height: 9px;
+      background: var(--c-magenta);
+    }
+  }
+
+  .levers__head { grid-column: 1 / -1; }
+  .levers { grid-column: 1 / -1; list-style: none; padding: 0; display: grid; gap: var(--sp-7) var(--col-gap); }
+  .levers__item { display: grid; gap: var(--sp-3); justify-items: start; align-content: start; border-top: 1px solid var(--c-ink); padding-top: var(--sp-5); }
+  .levers__item h3 { font-size: var(--step-3); }
+  .levers__item p { color: var(--c-ink-2); max-width: 44ch; }
+  @media (min-width: 64rem) {
+    .levers__head { grid-column: 1 / span 4; }
+    .levers { grid-column: 6 / span 7; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

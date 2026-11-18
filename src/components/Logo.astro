@@ -1,0 +1,29 @@
+---
+/**
+ * Logotipo Abilita, vettorializzato dal file originale del sito (media/logo_abilita_w.png).
+ * variant "color": "A" in pixel con gradiente magenta→blu + lettere in inchiostro (su chiaro)
+ * variant "white": tutto bianco (su superfici scure)
+ * [C] Sostituire i tracciati con il file vettoriale originale del logo, se disponibile.
+ */
+import paths from '../assets/brand/paths.json';
+
+interface Props { variant?: 'color' | 'white'; class?: string; title?: string }
+const { variant = 'color', class: className = '', title = 'Abilita' } = Astro.props;
+const gid = `logo-grad-${variant}`;
+---
+<svg class:list={['logo', className]} viewBox={paths.viewBox} role="img" aria-label={title} focusable="false">
+  {variant === 'color' && (
+    <defs>
+      <linearGradient id={gid} x1="20" y1="0" x2="530" y2="0" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#E61873" />
+        <stop offset="1" stop-color="#0F70B7" />
+      </linearGradient>
+    </defs>
+  )}
+  <path fill={variant === 'color' ? `url(#${gid})` : 'currentColor'} fill-rule="evenodd" d={paths.mark} />
+  <path fill="currentColor" fill-rule="evenodd" d={paths.word} />
+</svg>
+
+<style>
+  .logo { display: block; height: auto; color: var(--c-ink); }
+</style>

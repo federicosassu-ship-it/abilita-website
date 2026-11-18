@@ -1,0 +1,164 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import PixelGlyph from '../components/PixelGlyph.astro';
+import LogoWall from '../components/LogoWall.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { company } from '../data/site';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Network', href: '/network/' },
+];
+
+const benefits = [
+  { glyph: 'hub', title: 'Un unico riferimento', text: 'Strategia, tecnologia e comunicazione coordinate da noi: meno fornitori da gestire, meno tempo perso tra un passaggio e l’altro.' },
+  { glyph: 'steps', title: 'Team costruiti sul progetto', text: 'Le competenze si adattano a obiettivi, dimensioni e fasi del lavoro, senza strutture fisse da sostenere.' },
+  { glyph: 'rows', title: 'Una visione d’insieme', text: 'Ogni attività è collegata alle altre e valutata sugli stessi obiettivi.' },
+] as const;
+
+const roles = [
+  { who: 'Tu', what: 'Porti obiettivi, conoscenza del prodotto e decisioni.' },
+  { who: 'Abilita', what: 'Definisce la strategia, coordina il lavoro e ne verifica la qualità e i risultati.' },
+  { who: 'La rete', what: 'Mette a disposizione specialisti di marketing, trasformazione digitale e innovazione, quando servono.' },
+];
+---
+<Base
+  title="Network di competenze | Abilita"
+  description="Una rete di specialisti di marketing, trasformazione digitale e innovazione coordinata da Abilita: un solo interlocutore per progetti integrati nella filiera agroalimentare."
+  ogImage="network"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    breadcrumbs={crumbs}
+    label="Network"
+    title="Una rete di competenze, <em>un solo interlocutore</em>."
+    lead="Crediamo nel valore delle reti e della collaborazione. Per ogni progetto riuniamo gli specialisti necessari, tra marketing, trasformazione digitale e innovazione, e coordiniamo il lavoro al posto tuo."
+    pattern="network"
+    seed={3}
+  />
+
+  <section class="section section--rule" aria-labelledby="per-te">
+    <div class="container">
+      <SectionHead id="per-te" num="01" label="Cosa significa per te" title="Competenze specialistiche, <em>senza moltiplicare i fornitori</em>." width="wide" />
+      <ul class="benefits" role="list">
+        {benefits.map((b, i) => (
+          <li class="benefits__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <PixelGlyph name={b.glyph} />
+            <h3>{b.title}</h3>
+            <p>{b.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section surface-ink on-ink" aria-labelledby="come-funziona">
+    <div class="container grid-12">
+      <div class="roles__head">
+        <SectionHead id="come-funziona" num="02" label="Come funziona" title="Tre ruoli, <em>responsabilità chiare</em>." />
+      </div>
+      <ol class="roles" role="list">
+        {roles.map((r, i) => (
+          <li class="roles__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <span class="roles__num tabular" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="roles__who">{r.who}</h3>
+            <p class="roles__what">{r.what}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section surface-stone" aria-labelledby="collaborazioni">
+    <div class="container grid-12">
+      <div class="partners__head">
+        <SectionHead
+          id="collaborazioni"
+          num="03"
+          label="Collaborazioni"
+          title="Abbiamo lavorato con."
+          lead="Imprese e consorzi della filiera, organizzazioni di produttori, università e realtà della tecnologia e della consulenza."
+        />
+      </div>
+      <div class="partners__logos" data-reveal>
+        <LogoWall linked />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="partnership">
+    <div class="container grid-12">
+      <div class="partnership__head">
+        <SectionHead
+          id="partnership"
+          num="04"
+          label="Partnership"
+          title="Vuoi collaborare <em>con noi</em>?"
+          lead="Sei un professionista, un’impresa o un ente e vuoi proporre una collaborazione su progetti nella filiera agroalimentare? Scrivici: valutiamo con attenzione ogni proposta coerente con i nostri ambiti."
+        />
+      </div>
+      <div class="partnership__action">
+        <a
+          class="btn btn--outline"
+          href={`mailto:${company.partnershipEmail}?subject=${encodeURIComponent('Proposta di collaborazione')}`}
+          data-track="email_click"
+          data-track-props='{"indirizzo":"marketing","posizione":"network_partnership"}'
+        >
+          Proponi una collaborazione <Icon name="mail" />
+        </a>
+        <p class="partnership__mail">{company.partnershipEmail}</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    position="network"
+    title="Hai un progetto che richiede <em>più competenze</em>?"
+    text="Raccontacelo: mettiamo insieme le persone giuste e ti diamo un solo riferimento."
+  />
+</Base>
+
+<style>
+  .benefits { list-style: none; padding: 0; display: grid; gap: var(--sp-7) var(--col-gap); margin-top: var(--sp-8); }
+  .benefits__item { display: grid; gap: var(--sp-3); align-content: start; border-top: 1px solid var(--c-ink); padding-top: var(--sp-5); }
+  .benefits__item h3 { font-size: var(--step-2); }
+  .benefits__item p { color: var(--c-ink-2); max-width: 36ch; }
+  @media (min-width: 48rem) { .benefits { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .roles__head, .roles { grid-column: 1 / -1; }
+  .roles { list-style: none; padding: 0; display: grid; gap: 0; }
+  .roles__item {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    column-gap: var(--sp-4);
+    row-gap: var(--sp-2);
+    padding-block: var(--sp-5);
+    border-top: 1px solid var(--c-line-ink);
+  }
+  .roles__num { grid-row: span 2; font-size: var(--step--1); color: var(--c-blue-soft); font-weight: 600; padding-top: 0.6rem; }
+  .roles__who { font-size: var(--step-3); }
+  .roles__item:nth-child(2) .roles__who { color: var(--c-magenta-soft); }
+  .roles__what { color: var(--c-blue-soft); max-width: 46ch; }
+  @media (min-width: 64rem) {
+    .roles__head { grid-column: 1 / span 5; }
+    .roles { grid-column: 7 / span 6; }
+  }
+
+  .partners__head, .partners__logos { grid-column: 1 / -1; }
+  @media (min-width: 64rem) {
+    .partners__head { grid-column: 1 / span 4; }
+    .partners__logos { grid-column: 5 / span 8; }
+    .partners__logos :global(.logo-wall) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+
+  .partnership__head, .partnership__action { grid-column: 1 / -1; }
+  .partnership__action { display: grid; gap: var(--sp-3); justify-items: start; align-content: end; }
+  .partnership__mail { color: var(--c-muted); font-size: var(--step--1); }
+  @media (min-width: 64rem) {
+    .partnership__head { grid-column: 1 / span 7; }
+    .partnership__action { grid-column: 9 / span 4; }
+  }
+</style>

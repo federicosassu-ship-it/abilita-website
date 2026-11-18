@@ -1,0 +1,157 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import PixelGlyph from '../components/PixelGlyph.astro';
+import Icon from '../components/Icon.astro';
+import { company, legalLinks } from '../data/site';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Lavora con noi', href: '/lavora-con-noi/' },
+];
+
+// Profili ricercati elencati sul sito attuale [V]; descrizioni [P]
+const profiles = [
+  { title: 'Digital marketing e advertising', text: 'Pianificazione e gestione di campagne su motori di ricerca, social e circuiti programmatic.' },
+  { title: 'Content marketing', text: 'Contenuti e racconti per prodotti e organizzazioni della filiera agroalimentare.' },
+  { title: 'Intelligenza artificiale', text: 'Applicazioni dell’intelligenza artificiale a marketing, contenuti e processi.' },
+  { title: 'Project management', text: 'Coordinamento di progetti, persone e partner, con attenzione a tempi e obiettivi.' },
+  { title: 'E-commerce management', text: 'Gestione di negozi online e marketplace, dal catalogo agli ordini.' },
+];
+
+// Cosa offriamo [V]
+const offer = [
+  { glyph: 'target', title: 'Progetti concreti', text: 'Lavori su progetti reali, stimolanti e innovativi, portando competenze e idee.' },
+  { glyph: 'growth', title: 'Formazione continua', text: 'Opportunità di aggiornamento e di sviluppo professionale.' },
+  { glyph: 'hub', title: 'Un team multidisciplinare', text: 'Un gruppo di lavoro collaborativo, dove competenze diverse si incontrano.' },
+] as const;
+
+const mailto = (subject: string) => `mailto:${company.careersEmail}?subject=${encodeURIComponent(subject)}`;
+---
+<Base
+  title="Lavora con noi | Abilita"
+  description="Cerchiamo profili in digital marketing e advertising, content marketing, intelligenza artificiale, project management ed e-commerce management. Invia la tua candidatura."
+  ogImage="lavora-con-noi"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    breadcrumbs={crumbs}
+    label="Lavora con noi"
+    title="Contribuisci all’innovazione <em>dell’agroalimentare</em>."
+    lead="Siamo sempre alla ricerca di persone competenti e appassionate per ampliare il team: progetti concreti, formazione continua e un gruppo di lavoro multidisciplinare."
+    pattern="careers"
+    seed={9}
+  >
+    <div slot="actions" class="btn-row">
+      <a class="btn" href={mailto('Candidatura')} data-track="candidatura_click" data-track-props='{"posizione":"hero"}'>
+        Invia la tua candidatura <Icon name="mail" />
+      </a>
+      <a class="link-arrow" href="#profili">Profili che cerchiamo <Icon name="arrow-right" /></a>
+    </div>
+  </PageHero>
+
+  <section class="section section--rule" aria-labelledby="profili">
+    <div class="container grid-12">
+      <div class="profiles__head">
+        <SectionHead id="profili" num="01" label="Profili" title="Chi <em>stiamo cercando</em>." lead="Accogliamo candidature spontanee in questi ambiti." />
+      </div>
+      <ul class="profiles" role="list">
+        {profiles.map((p, i) => (
+          <li class="profiles__item" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            <a class="profiles__apply" href={mailto(`Candidatura – ${p.title}`)} data-track="candidatura_click" data-track-props={JSON.stringify({ ambito: p.title })}>
+              Candidati <span class="visually-hidden">per {p.title}</span> <Icon name="arrow-right" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section surface-ink on-ink" aria-labelledby="offerta">
+    <div class="container">
+      <SectionHead id="offerta" num="02" label="Cosa offriamo" title="Crescere, <em>lavorando su progetti veri</em>." />
+      <ul class="offer" role="list">
+        {offer.map((o, i) => (
+          <li class="offer__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <PixelGlyph name={o.glyph} class="offer__glyph" />
+            <h3>{o.title}</h3>
+            <p>{o.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="candidatura">
+    <div class="container grid-12">
+      <div class="apply__head">
+        <SectionHead id="candidatura" num="03" label="Come candidarsi" title="Una email, <em>due allegati</em>." />
+      </div>
+      <div class="apply__body">
+        <ol class="apply__steps" role="list">
+          <li><span class="tabular">01</span> Prepara il curriculum e una lettera di presentazione.</li>
+          <li><span class="tabular">02</span> Scrivi a <a href={mailto('Candidatura')}>{company.careersEmail}</a> e indica nell’oggetto l’ambito che ti interessa.</li>
+        </ol>
+        <a class="btn" href={mailto('Candidatura')} data-track="candidatura_click" data-track-props='{"posizione":"come_candidarsi"}'>
+          Invia la tua candidatura <Icon name="mail" />
+        </a>
+        <p class="apply__privacy">
+          Inviaci solo i dati utili alla selezione. Li trattiamo secondo la nostra <a href={legalLinks.privacy} rel="noopener">privacy policy</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight surface-stone" aria-labelledby="aziende">
+    <div class="container companies">
+      <h2 id="aziende" class="companies__title">Cerchi un partner per la tua impresa, non un lavoro?</h2>
+      <a class="link-arrow" href="/contatti/">Parliamo del tuo progetto <Icon name="arrow-right" /></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .profiles__head, .profiles { grid-column: 1 / -1; }
+  .profiles { list-style: none; padding: 0; border-top: 1px solid var(--c-ink); }
+  .profiles__item {
+    display: grid;
+    gap: var(--sp-2) var(--col-gap);
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .profiles__item h3 { font-size: var(--step-2); }
+  .profiles__item p { color: var(--c-ink-2); max-width: 46ch; }
+  .profiles__apply { display: inline-flex; align-items: center; gap: 0.4em; min-height: 2.75rem; font-weight: 600; color: var(--c-ink); text-decoration: none; justify-self: start; }
+  .profiles__apply:hover { color: var(--c-blue-strong); }
+  @media (min-width: 64rem) {
+    .profiles__head { grid-column: 1 / span 4; }
+    .profiles { grid-column: 6 / span 7; }
+    .profiles__item { grid-template-columns: 1fr auto; align-items: baseline; }
+    .profiles__item p { grid-column: 1; }
+    .profiles__apply { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+  }
+
+  .offer { list-style: none; padding: 0; display: grid; gap: var(--sp-7) var(--col-gap); margin-top: var(--sp-8); }
+  .offer__item { display: grid; gap: var(--sp-3); align-content: start; border-top: 1px solid var(--c-line-ink); padding-top: var(--sp-5); }
+  .offer__item :global(.offer__glyph) { color: var(--c-white); --glyph-accent: var(--c-magenta-soft); margin-bottom: var(--sp-3); }
+  .offer__item h3 { font-size: var(--step-2); }
+  .offer__item p { color: var(--c-blue-soft); max-width: 34ch; }
+  @media (min-width: 48rem) { .offer { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .apply__head, .apply__body { grid-column: 1 / -1; }
+  .apply__body { display: grid; gap: var(--sp-5); justify-items: start; }
+  .apply__steps { list-style: none; padding: 0; display: grid; gap: var(--sp-3); font-size: var(--step-1); line-height: 1.5; }
+  .apply__steps li { display: grid; grid-template-columns: 2.5rem 1fr; }
+  .apply__steps .tabular { font-size: var(--step--1); color: var(--c-muted); font-weight: 600; padding-top: 0.3rem; }
+  .apply__privacy { font-size: var(--step--1); color: var(--c-ink-2); max-width: 52ch; }
+  @media (min-width: 64rem) {
+    .apply__head { grid-column: 1 / span 5; }
+    .apply__body { grid-column: 7 / span 6; }
+  }
+
+  .companies { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--sp-4); }
+  .companies__title { font-size: var(--step-3); max-width: 28ch; }
+</style>

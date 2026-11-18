@@ -1,0 +1,29 @@
+---
+/** Conferma per l'invio senza JavaScript (redirect dal gestore PHP). Non indicizzata. */
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { company } from '../../data/site';
+---
+<Base title="Richiesta ricevuta | Abilita" description="Abbiamo ricevuto la tua richiesta: ti ricontatteremo per fissare un primo confronto." noindex>
+  <section class="status-page" aria-labelledby="titolo-pagina">
+    <div class="container status-page__inner">
+      <span class="status-page__mark" aria-hidden="true"><Icon name="check" /></span>
+      <p class="eyebrow">Richiesta inviata</p>
+      <h1 id="titolo-pagina">Grazie, abbiamo ricevuto <em>la tua richiesta</em>.</h1>
+      <p class="lead">Ti ricontatteremo all’indirizzo email che ci hai indicato per fissare un primo confronto. Se vuoi aggiungere dettagli o allegati, scrivici a <a href={`mailto:${company.email}`}>{company.email}</a>.</p>
+      <div class="btn-row">
+        <a class="btn" href="/servizi/">Scopri i servizi <Icon name="arrow-right" /></a>
+        <a class="link-arrow" href="/">Torna alla home <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .status-page { padding-block: var(--section-y); }
+  .status-page__inner { display: grid; gap: var(--sp-5); justify-items: start; }
+  .status-page h1 { max-width: 16ch; }
+  .status-page .lead { max-width: 52ch; }
+  .status-page__mark { display: grid; place-items: center; width: 3.5rem; height: 3.5rem; background: var(--c-success-tint); color: var(--c-success); }
+  .status-page__mark :global(.icon) { width: 1.75rem; height: 1.75rem; }
+</style>

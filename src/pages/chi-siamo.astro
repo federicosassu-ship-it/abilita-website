@@ -1,0 +1,217 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Steps from '../components/Steps.astro';
+import PixelGlyph from '../components/PixelGlyph.astro';
+import Icon from '../components/Icon.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { method } from '../data/method';
+import { company } from '../data/site';
+import { services } from '../data/services';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Chi siamo', href: '/chi-siamo/' },
+];
+
+// Struttura "Un'impresa / Un team / Un partner / Un obiettivo comune" dal sito attuale [V], testi riscritti [P]
+const identity = [
+  { word: 'Un’impresa', text: 'Affrontiamo ogni giorno le sfide della filiera agroalimentare e ti aiutiamo a cogliere le opportunità del tuo mercato.' },
+  { word: 'Un team', text: 'Progettiamo e realizziamo piattaforme e-commerce e strategie di food marketing e comunicazione.' },
+  { word: 'Un partner', text: 'Proponiamo soluzioni a partire dai tuoi bisogni reali e presidiamo tutti i canali, a cominciare da quelli digitali, con obiettivi misurabili.' },
+  { word: 'Un obiettivo comune', text: 'Lavoriamo sui tuoi obiettivi di business. Quando un progetto è strategico anche per noi, valutiamo il co-investimento e ti aiutiamo a trovare la finanza agevolata.' },
+];
+
+const principles = [
+  { glyph: 'target', title: 'Prima gli obiettivi, poi gli strumenti', text: 'Scegliamo tecnologie e canali solo dopo aver chiarito che cosa deve cambiare per la tua impresa.' },
+  { glyph: 'clarity', title: 'Parole chiare, numeri chiari', text: 'Spieghiamo che cosa facciamo e perché, e misuriamo i risultati con indicatori condivisi.' },
+  { glyph: 'hub', title: 'Le competenze giuste, quando servono', text: 'Coinvolgiamo gli specialisti della nostra rete solo quando servono, senza strutture superflue.' },
+] as const;
+
+const audiences = ['Piccole imprese', 'Grandi consorzi', 'Organizzazioni di produttori', 'Startup innovative', 'Università', 'Realtà della consulenza'];
+const a = company.address;
+---
+<Base
+  title="Chi siamo | Abilita, strategia e tecnologia per l’agroalimentare"
+  description="Abilita affianca imprese, cooperative e consorzi della filiera agroalimentare con e-commerce, food marketing e digital advertising, coordinando una rete di specialisti."
+  ogImage="chi-siamo"
+  breadcrumbs={crumbs}
+>
+  <PageHero
+    breadcrumbs={crumbs}
+    label="Chi siamo"
+    title="Strategia e tecnologia <em>al&nbsp;servizio di chi produce</em>."
+    lead="Abilita affianca imprese e organizzazioni della filiera agroalimentare nella crescita sui mercati. Progettiamo e realizziamo piattaforme e-commerce, strategie di food marketing e campagne di digital advertising, coordinando una rete di specialisti."
+    pattern="about"
+    seed={5}
+  />
+
+  <section class="section section--rule" aria-labelledby="identita">
+    <div class="container">
+      <SectionHead id="identita" num="01" label="In quattro parole" title="Chi siamo, <em>per te</em>." />
+      <dl class="identity">
+        {identity.map((item, i) => (
+          <div class="identity__row" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <dt class="identity__word">{item.word}</dt>
+            <dd class="identity__text">{item.text}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="section surface-white" aria-labelledby="nome">
+    <div class="container grid-12">
+      <div class="name__mark" aria-hidden="true">
+        <span class="name__word">Abilita</span>
+      </div>
+      <div class="name__text">
+        <p class="eyebrow">Il nome</p>
+        <h2 id="nome" class="name__title">Abilitare: <em>rendere possibile</em>.</h2>
+        <p class="lead">È il modo in cui intendiamo il nostro lavoro: dare a ogni impresa le competenze e gli strumenti per crescere, e restare al suo fianco mentre lo fa.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="metodo">
+    <div class="container">
+      <div class="method__head">
+        <SectionHead
+          id="metodo"
+          num="02"
+          label="Metodo"
+          title="Prima gli obiettivi, <em>poi gli strumenti</em>."
+          lead="Ogni progetto attraversa quattro fasi. Gli obiettivi e gli indicatori si fissano all’inizio, così che ogni attività successiva possa essere valutata."
+        />
+      </div>
+      <Steps items={method} label="Le quattro fasi del metodo Abilita" />
+    </div>
+  </section>
+
+  <section class="section surface-ink on-ink" aria-labelledby="principi">
+    <div class="container">
+      <SectionHead id="principi" num="03" label="Principi" title="Come ci comportiamo <em>nei progetti</em>." />
+      <ul class="principles" role="list">
+        {principles.map((p, i) => (
+          <li class="principles__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <PixelGlyph name={p.glyph} class="principles__glyph" />
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="esperienza">
+    <div class="container grid-12">
+      <div class="exp__head">
+        <SectionHead
+          id="esperienza"
+          num="04"
+          label="Esperienza"
+          title="Progetti con realtà <em>molto diverse</em>."
+          lead="Abbiamo lavorato su idee e progetti che hanno visto protagoniste:"
+        />
+      </div>
+      <ul class="audiences" role="list">
+        {audiences.map((item) => <li data-reveal>{item}</li>)}
+      </ul>
+      <div class="exp__link">
+        <a class="link-arrow" href="/network/">Le organizzazioni con cui abbiamo lavorato <Icon name="arrow-right" /></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight surface-stone" aria-labelledby="in-breve">
+    <div class="container grid-12">
+      <div class="facts__head">
+        <h2 id="in-breve" class="facts__title">Abilita in breve</h2>
+      </div>
+      <dl class="facts">
+        <div><dt>Ragione sociale</dt><dd>{company.legalName}</dd></div>
+        <div><dt>Sede legale</dt><dd>{a.street}, {a.postalCode} {a.city} ({a.province}), {a.region}</dd></div>
+        <div><dt>Settore</dt><dd>Filiera agroalimentare</dd></div>
+        <div><dt>Servizi</dt><dd>{services.map((s) => s.name).join(', ')}</dd></div>
+        <div><dt>Contatti</dt><dd><a href={`mailto:${company.email}`}>{company.email}</a></dd></div>
+        <div><dt>Partita IVA</dt><dd>{company.vat}</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <CtaBand
+    position="chi-siamo"
+    title="Vuoi capire se possiamo <em>lavorare insieme</em>?"
+    text="Raccontaci il tuo progetto: il primo confronto serve proprio a questo."
+  />
+</Base>
+
+<style>
+  .identity { margin-top: var(--sp-8); border-top: 1px solid var(--c-ink); }
+  .identity__row {
+    display: grid;
+    gap: var(--sp-2) var(--col-gap);
+    padding-block: var(--sp-5);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .identity__word { font-family: var(--font-display); font-size: var(--step-3); line-height: 1.1; }
+  .identity__text { color: var(--c-ink-2); font-size: var(--step-1); line-height: 1.5; max-width: 52ch; margin: 0; }
+  @media (min-width: 64rem) {
+    .identity__row { grid-template-columns: repeat(12, minmax(0, 1fr)); align-items: baseline; }
+    .identity__word { grid-column: 1 / span 5; }
+    .identity__text { grid-column: 6 / span 7; }
+  }
+
+  .name__mark { grid-column: 1 / -1; }
+  .name__word {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(4rem, 2rem + 10vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--c-blue);
+  }
+  .name__text { grid-column: 1 / -1; display: grid; gap: var(--sp-5); align-content: center; justify-items: start; }
+  .name__title { font-size: var(--step-4); max-width: 18ch; }
+  @media (min-width: 64rem) {
+    .name__mark { grid-column: 1 / span 6; align-self: center; }
+    .name__text { grid-column: 8 / span 5; }
+  }
+
+  .method__head { margin-bottom: var(--sp-8); }
+
+  .principles { list-style: none; padding: 0; display: grid; gap: var(--sp-7) var(--col-gap); margin-top: var(--sp-8); }
+  .principles__item { display: grid; gap: var(--sp-3); align-content: start; border-top: 1px solid var(--c-line-ink); padding-top: var(--sp-5); }
+  .principles__item :global(.principles__glyph) { color: var(--c-white); --glyph-accent: var(--c-magenta-soft); margin-bottom: var(--sp-3); }
+  .principles__item h3 { font-size: var(--step-2); max-width: 20ch; }
+  .principles__item p { color: var(--c-blue-soft); max-width: 36ch; }
+  @media (min-width: 48rem) { .principles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+  .exp__head, .audiences, .exp__link { grid-column: 1 / -1; }
+  .audiences { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); border-top: 1px solid var(--c-ink); }
+  .audiences li {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    padding: var(--sp-4) 0;
+    border-bottom: 1px solid var(--c-line);
+    margin-right: var(--col-gap);
+  }
+  @media (min-width: 64rem) {
+    .exp__head { grid-column: 1 / span 5; }
+    .audiences { grid-column: 7 / span 6; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .exp__link { grid-column: 7 / span 6; }
+  }
+
+  .facts__head { grid-column: 1 / -1; }
+  .facts__title { font-size: var(--step-3); }
+  .facts { grid-column: 1 / -1; display: grid; gap: 0; border-top: 1px solid var(--c-ink); }
+  .facts > div { display: grid; grid-template-columns: minmax(7rem, 1fr) 2fr; gap: var(--sp-4); padding-block: var(--sp-3); border-bottom: 1px solid var(--c-line); }
+  .facts dt { color: var(--c-muted); font-size: var(--step--1); padding-top: 0.15rem; }
+  .facts dd { margin: 0; }
+  @media (min-width: 64rem) {
+    .facts__head { grid-column: 1 / span 4; }
+    .facts { grid-column: 6 / span 7; }
+  }
+</style>

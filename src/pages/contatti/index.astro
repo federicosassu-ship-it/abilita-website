@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import Icon from '../../components/Icon.astro';
+import { company, whatsappUrl } from '../../data/site';
+
+const crumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Contatti', href: '/contatti/' },
+];
+const a = company.address;
+const next = [
+  { title: 'Leggiamo la tua richiesta', text: 'Ogni messaggio arriva direttamente al team.' },
+  { title: 'Ti ricontattiamo', text: 'Fissiamo insieme un primo confronto, nella modalità più comoda per te.' },
+  { title: 'Valutiamo insieme', text: 'Se c’è spazio per lavorare insieme, prepariamo una proposta su misura.' },
+];
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contatti — Abilita',
+  url: 'https://www.abilita.biz/contatti/',
+  about: { '@id': 'https://www.abilita.biz/#organizzazione' },
+}];
+---
+<Base
+  title="Contatti | Abilita"
+  description="Scrivici per un primo confronto sul tuo progetto di e-commerce, food marketing o digital advertising. Modulo di contatto, email e WhatsApp."
+  ogImage="contatti"
+  breadcrumbs={crumbs}
+  schema={schema}
+>
+  <section class="contact" aria-labelledby="titolo-pagina">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <div class="contact__grid">
+        <header class="contact__head">
+          <p class="eyebrow">Contatti</p>
+          <h1 id="titolo-pagina">Parliamo del tuo <em>progetto</em>.</h1>
+          <p class="lead">Raccontaci da dove parti e dove vuoi arrivare. Leggiamo ogni richiesta e ti ricontattiamo per fissare un primo confronto.</p>
+        </header>
+
+        <div class="contact__form">
+          <ContactForm />
+        </div>
+
+        <div class="contact__aside">
+          <section class="aside-block" aria-labelledby="diretti">
+            <h2 id="diretti" class="aside-block__title">Preferisci scriverci direttamente?</h2>
+            <ul class="direct" role="list">
+              <li>
+                <span class="direct__label">Email</span>
+                <a href={`mailto:${company.email}`} data-track="email_click" data-track-props='{"indirizzo":"info","posizione":"contatti"}'><Icon name="mail" />{company.email}</a>
+              </li>
+              <li>
+                <span class="direct__label">WhatsApp</span>
+                <a href={whatsappUrl} rel="noopener" data-track="whatsapp_click" data-track-props='{"posizione":"contatti"}'><Icon name="chat" /><span class="nowrap">{company.whatsapp.display}</span></a>
+              </li>
+              <li>
+                <span class="direct__label">Partnership e collaborazioni</span>
+                <a href={`mailto:${company.partnershipEmail}`} data-track="email_click" data-track-props='{"indirizzo":"marketing","posizione":"contatti"}'><Icon name="mail" />{company.partnershipEmail}</a>
+              </li>
+              <li>
+                <span class="direct__label">Sede legale</span>
+                <p class="direct__text"><Icon name="pin" /><span>{a.street}<br />{a.postalCode} {a.city} ({a.province}), {a.region}</span></p>
+              </li>
+            </ul>
+          </section>
+
+          <section class="aside-block" aria-labelledby="dopo">
+            <h2 id="dopo" class="aside-block__title">Cosa succede dopo</h2>
+            <ol class="next" role="list">
+              {next.map((n, i) => (
+                <li>
+                  <span class="next__num tabular" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                  <div>
+                    <p class="next__title">{n.title}</p>
+                    <p class="next__text">{n.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact { padding-block: var(--sp-5) var(--section-y); }
+  .contact__grid { display: grid; gap: var(--sp-8) var(--col-gap); margin-top: clamp(1.5rem, 1rem + 3vw, 4rem); }
+  .contact__head { display: grid; gap: var(--sp-5); justify-items: start; }
+  .contact__head h1 { font-size: clamp(2.35rem, 1.55rem + 4vw, 5rem); max-width: 14ch; }
+  .contact__head .lead { max-width: 46ch; }
+
+  .contact__aside { display: grid; gap: var(--sp-7); align-content: start; }
+  .aside-block { display: grid; gap: var(--sp-4); }
+  .aside-block__title { font-size: var(--step-2); }
+  .direct { list-style: none; padding: 0; border-top: 1px solid var(--c-ink); }
+  .direct li { display: grid; gap: 0.15rem; padding-block: var(--sp-3); border-bottom: 1px solid var(--c-line); }
+  .direct__label { font-size: var(--step--1); color: var(--c-muted); }
+  .direct a, .direct__text {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--sp-2);
+    min-height: 2.75rem;
+    padding-block: 0.55rem;
+    color: var(--c-ink);
+    font-weight: 500;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+  .direct a:hover { color: var(--c-blue-strong); text-decoration: underline; }
+  .direct :global(.icon) { margin-top: 0.15em; }
+  .next { list-style: none; padding: 0; display: grid; gap: var(--sp-4); }
+  .next li { display: grid; grid-template-columns: 2.5rem 1fr; }
+  .next__num { font-size: var(--step--1); font-weight: 600; color: var(--c-muted); padding-top: 0.2rem; }
+  .next__title { font-weight: 600; }
+  .next__text { color: var(--c-ink-2); font-size: var(--step--1); }
+
+  @media (min-width: 64rem) {
+    .contact__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .contact__head { grid-column: 1 / span 8; }
+    .contact__form { grid-column: 1 / span 7; }
+    .contact__aside { grid-column: 9 / span 4; }
+  }
+</style>

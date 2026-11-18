@@ -1,0 +1,165 @@
+---
+import '../styles/tokens.css';
+import '../styles/global.css';
+import '@fontsource-variable/fraunces/opsz.css';
+import '@fontsource-variable/fraunces/opsz-italic.css';
+import '@fontsource-variable/instrument-sans/wght.css';
+import frauncesLatin from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import instrumentLatin from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { company, config } from '../data/site';
+
+export interface Crumb { label: string; href: string }
+interface Props {
+  title: string;
+  description: string;
+  /** Nome del file in /public/og (senza estensione) */
+  ogImage?: string;
+  noindex?: boolean;
+  breadcrumbs?: Crumb[];
+  schema?: Record<string, unknown>[];
+  /** Solo per la home: reindirizza i vecchi URL (?p=… e #ancora) alle nuove pagine */
+  legacyRedirects?: boolean;
+}
+
+const { title, description, ogImage = 'default', noindex = false, breadcrumbs, schema = [], legacyRedirects = false } = Astro.props;
+const site = Astro.site ?? new URL(config.siteUrl);
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogUrl = new URL(`/og/${ogImage}.png`, site).href;
+const robots = noindex || config.noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large';
+
+const a = company.address;
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${config.siteUrl}/#organizzazione`,
+  name: company.name,
+  legalName: company.legalName,
+  url: `${config.siteUrl}/`,
+  logo: `${config.siteUrl}/logo-abilita.svg`,
+  email: company.email,
+  telephone: `+${company.whatsapp.e164}`,
+  vatID: `IT${company.vat}`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: a.street,
+    postalCode: a.postalCode,
+    addressLocality: a.city,
+    addressRegion: a.region,
+    addressCountry: a.country,
+  },
+  knowsAbout: ['E-commerce', 'Food marketing', 'Digital advertising', 'Filiera agroalimentare'],
+  areaServed: { '@type': 'Country', name: 'Italia' },
+};
+const breadcrumbSchema = breadcrumbs && breadcrumbs.length > 1 ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    item: new URL(c.href, site).href,
+  })),
+} : null;
+const jsonLd = [organization, ...(breadcrumbSchema ? [breadcrumbSchema] : []), ...schema];
+
+const iub = config.iubenda;
+const iubConfig = {
+  siteId: Number(iub.siteId),
+  cookiePolicyId: Number(iub.cookiePolicyId),
+  lang: 'it',
+  // Solo posizione: il banner resta identico nei testi e nelle scelte, ma non copre
+  // intestazione e navigazione (problema rilevato nell'audit su mobile).
+  banner: { position: 'float-bottom-center' },
+};
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={robots} />
+    <meta name="theme-color" content="#f6f4ef" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <link rel="preload" href={frauncesLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrumentLatin} as="font" type="font/woff2" crossorigin />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Abilita" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Abilita — strategia, tecnologia e marketing per la filiera agroalimentare" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    {legacyRedirects && (
+      <script is:inline>
+        (function () {
+          var map = { home: '/', chi_siamo: '/chi-siamo/', e_commerce: '/servizi/e-commerce/', food_marketing: '/servizi/food-marketing/', digital_advertising: '/servizi/digital-advertising/', partner: '/network/', lavora_con_noi: '/lavora-con-noi/', contatti: '/contatti/' };
+          var p = new URLSearchParams(location.search).get('p');
+          var h = location.hash.replace('#', '');
+          var target = (p && map[p]) || (map[h] && h !== 'home' ? map[h] : null);
+          if (target && target !== location.pathname) location.replace(target);
+        })();
+      </script>
+    )}
+
+    {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
+
+    {iub.banner && (
+      <>
+        <script is:inline define:vars={{ iubConfig }}>
+          window._iub = window._iub || [];
+          window._iub.csConfiguration = Object.assign({}, iubConfig, {
+            callback: {
+              onPreferenceExpressedOrNotNeeded: function (pref) {
+                var measurement = !pref || pref.consent === true || !!(pref.purposes && pref.purposes[4]);
+                window.__abilitaConsent = { measurement: measurement };
+                document.dispatchEvent(new CustomEvent('abilita:consent', { detail: { measurement: measurement } }));
+              },
+            },
+          });
+        </script>
+        <script is:inline src="https://cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
+      </>
+    )}
+  </head>
+  <body>
+    <a class="skip-link" href="#contenuto">Vai al contenuto</a>
+    <Header />
+    <main id="contenuto" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      import { initReveal } from '../scripts/reveal';
+      import { initAnalytics } from '../scripts/analytics';
+      initReveal();
+      initAnalytics({
+        domain: import.meta.env.PUBLIC_ANALYTICS_DOMAIN ?? '',
+        src: import.meta.env.PUBLIC_ANALYTICS_SRC ?? 'https://plausible.io/js/script.js',
+        consentViaIubenda: (import.meta.env.PUBLIC_IUBENDA_BANNER ?? 'true') !== 'false',
+      });
+    </script>
+  </body>
+</html>
+
+<style>
+  main:focus { outline: none; }
+</style>

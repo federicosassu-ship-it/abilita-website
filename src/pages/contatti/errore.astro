@@ -1,0 +1,30 @@
+---
+/** Pagina di errore per l'invio senza JavaScript (redirect dal gestore PHP). Non indicizzata. */
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { company, whatsappUrl } from '../../data/site';
+---
+<Base title="Richiesta non inviata | Abilita" description="La richiesta non è stata inviata. Riprova oppure contattaci via email o WhatsApp." noindex>
+  <section class="status-page" aria-labelledby="titolo-pagina">
+    <div class="container status-page__inner">
+      <span class="status-page__mark" aria-hidden="true"><Icon name="alert" /></span>
+      <p class="eyebrow">Richiesta non inviata</p>
+      <h1 id="titolo-pagina">Non siamo riusciti a inviare <em>la tua richiesta</em>.</h1>
+      <p class="lead">Controlla di aver indicato nome e cognome, un indirizzo email valido e un messaggio di almeno 10 caratteri, poi riprova. Se il problema continua, scrivici direttamente.</p>
+      <div class="btn-row">
+        <a class="btn" href="/contatti/#modulo">Torna al modulo <Icon name="arrow-right" /></a>
+        <a class="link-arrow" href={`mailto:${company.email}`}><Icon name="mail" /> {company.email}</a>
+        <a class="link-arrow" href={whatsappUrl} rel="noopener"><Icon name="chat" /> WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .status-page { padding-block: var(--section-y); }
+  .status-page__inner { display: grid; gap: var(--sp-5); justify-items: start; }
+  .status-page h1 { max-width: 18ch; }
+  .status-page .lead { max-width: 52ch; }
+  .status-page__mark { display: grid; place-items: center; width: 3.5rem; height: 3.5rem; background: var(--c-error-tint); color: var(--c-error); }
+  .status-page__mark :global(.icon) { width: 1.75rem; height: 1.75rem; }
+</style>

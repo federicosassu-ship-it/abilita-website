@@ -1,0 +1,285 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { services } from '../data/services';
+import { primaryNav, primaryCta, company, whatsappUrl } from '../data/site';
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href;
+const inSection = (href: string) => path.startsWith(href);
+const servicesActive = inSection('/servizi/');
+---
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="site-header__brand" href="/" aria-label="Abilita — vai alla home">
+      <Logo class="site-header__logo" />
+    </a>
+
+    <nav class="site-nav" aria-label="Principale">
+      <ul class="site-nav__list" role="list">
+        <li class="site-nav__item" data-dropdown>
+          <button
+            type="button"
+            class:list={['site-nav__link', 'site-nav__toggle', { 'is-active': servicesActive }]}
+            aria-expanded="false"
+            aria-controls="nav-servizi"
+            data-dropdown-toggle
+          >
+            Servizi <Icon name="chevron-down" class="site-nav__chevron" />
+          </button>
+          <div class="site-nav__panel" id="nav-servizi" hidden data-dropdown-panel>
+            <ul class="nav-panel__list" role="list">
+              {services.map((s) => (
+                <li>
+                  <a
+                    class="nav-panel__link"
+                    href={`/servizi/${s.slug}/`}
+                    aria-current={isCurrent(`/servizi/${s.slug}/`) ? 'page' : undefined}
+                    data-track="servizio_click"
+                    data-track-props={JSON.stringify({ servizio: s.slug, posizione: 'menu' })}
+                  >
+                    <span class="nav-panel__num tabular" aria-hidden="true">{s.number}</span>
+                    <span class="nav-panel__text">
+                      <span class="nav-panel__title">{s.name}</span>
+                      <span class="nav-panel__desc">{s.navDescription}</span>
+                    </span>
+                    <Icon name="arrow-right" class="nav-panel__arrow" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a class="link-arrow nav-panel__all" href="/servizi/" aria-current={isCurrent('/servizi/') ? 'page' : undefined}>
+              Panoramica dei servizi <Icon name="arrow-right" />
+            </a>
+          </div>
+        </li>
+        {primaryNav.map((item) => (
+          <li class="site-nav__item">
+            <a
+              class:list={['site-nav__link', { 'is-active': inSection(item.href) }]}
+              href={item.href}
+              aria-current={isCurrent(item.href) ? 'page' : undefined}
+            >{item.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <a
+      class="btn btn--sm site-header__cta"
+      href={primaryCta.href}
+      aria-current={isCurrent(primaryCta.href) ? 'page' : undefined}
+      data-track="cta_click"
+      data-track-props={JSON.stringify({ posizione: 'header', etichetta: primaryCta.label })}
+    >{primaryCta.label}</a>
+
+    <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="menu-mobile" data-menu-toggle>
+      <span class="menu-toggle__label" data-menu-label>Menu</span>
+      <Icon name="menu" class="menu-toggle__open" />
+      <Icon name="close" class="menu-toggle__close" />
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="menu-mobile" hidden data-menu>
+    <nav class="container mobile-menu__inner" aria-label="Principale (mobile)">
+      <p class="mobile-menu__label" id="mm-servizi">Servizi</p>
+      <ul class="mobile-menu__list mobile-menu__list--services" role="list" aria-labelledby="mm-servizi">
+        {services.map((s) => (
+          <li>
+            <a href={`/servizi/${s.slug}/`} aria-current={isCurrent(`/servizi/${s.slug}/`) ? 'page' : undefined}>
+              <span class="tabular mobile-menu__num" aria-hidden="true">{s.number}</span>{s.name}
+            </a>
+          </li>
+        ))}
+        <li><a class="mobile-menu__all" href="/servizi/">Tutti i servizi <Icon name="arrow-right" /></a></li>
+      </ul>
+      <ul class="mobile-menu__list" role="list">
+        {primaryNav.map((item) => (
+          <li><a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a></li>
+        ))}
+        <li><a href="/contatti/" aria-current={isCurrent('/contatti/') ? 'page' : undefined}>Contatti</a></li>
+      </ul>
+      <div class="mobile-menu__footer">
+        <a class="btn" href="/contatti/" data-track="cta_click" data-track-props='{"posizione":"menu_mobile"}'>
+          Parliamo del tuo progetto <Icon name="arrow-right" />
+        </a>
+        <ul class="mobile-menu__direct" role="list">
+          <li><a href={`mailto:${company.email}`} data-track="email_click" data-track-props='{"indirizzo":"info","posizione":"menu_mobile"}'><Icon name="mail" />{company.email}</a></li>
+          <li><a href={whatsappUrl} rel="noopener" data-track="whatsapp_click" data-track-props='{"posizione":"menu_mobile"}'><Icon name="chat" />WhatsApp {company.whatsapp.display}</a></li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  import { initNavigation } from '../scripts/nav';
+  initNavigation();
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    background: var(--c-paper);
+    border-bottom: 1px solid transparent;
+    transition: border-color var(--dur-2) var(--ease-out), background-color var(--dur-2);
+  }
+  .site-header.is-scrolled { border-bottom-color: var(--c-line); }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-5);
+    height: var(--header-h);
+  }
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-right: auto;
+    color: var(--c-ink);
+  }
+  .site-header__brand :global(.site-header__logo) { width: clamp(7rem, 6rem + 2.5vw, 8.5rem); }
+
+  /* Navigazione desktop */
+  .site-nav { display: none; }
+  .site-nav__list { display: flex; align-items: center; gap: var(--sp-1); list-style: none; padding: 0; }
+  .site-nav__item { position: relative; }
+  .site-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    min-height: 2.75rem;
+    padding: 0 0.85rem;
+    border: 0;
+    background: none;
+    color: var(--c-ink);
+    font-size: var(--step-0);
+    font-weight: 500;
+    text-decoration: none;
+    position: relative;
+  }
+  .site-nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.45rem;
+    height: 1.5px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--dur-2) var(--ease-out);
+  }
+  .site-nav__link:hover { color: var(--c-ink); }
+  .site-nav__link:hover::after,
+  .site-nav__link.is-active::after,
+  .site-nav__link[aria-expanded='true']::after { transform: scaleX(1); }
+  .site-nav__link.is-active::after { background: var(--c-magenta); }
+  .site-nav__link :global(.site-nav__chevron) { width: 1rem; height: 1rem; transition: transform var(--dur-2) var(--ease-out); }
+  .site-nav__toggle[aria-expanded='true'] :global(.site-nav__chevron) { transform: rotate(180deg); }
+
+  .site-nav__panel {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: -1rem;
+    width: min(36rem, 80vw);
+    padding: var(--sp-3) var(--sp-5) var(--sp-4);
+    background: var(--c-white);
+    border: var(--border);
+    box-shadow: var(--shadow-pop);
+  }
+  .site-nav__panel:not([hidden]) { animation: panel-in var(--dur-2) var(--ease-out); }
+  @keyframes panel-in { from { opacity: 0; transform: translateY(-6px); } }
+  .nav-panel__list { list-style: none; padding: 0; }
+  .nav-panel__list li + li { border-top: var(--border); }
+  .nav-panel__link {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: start;
+    gap: var(--sp-3);
+    padding: var(--sp-4) 0;
+    color: var(--c-ink);
+    text-decoration: none;
+  }
+  .nav-panel__num { font-size: var(--step--1); color: var(--c-muted); padding-top: 0.35em; }
+  .nav-panel__text { display: grid; gap: 0.15rem; }
+  .nav-panel__title { font-family: var(--font-display); font-size: var(--step-2); line-height: 1.15; }
+  .nav-panel__desc { font-size: var(--step--1); color: var(--c-ink-2); line-height: 1.4; }
+  .nav-panel__link :global(.nav-panel__arrow) { margin-top: 0.35rem; transition: transform var(--dur-2) var(--ease-out); }
+  .nav-panel__link:hover { color: var(--c-ink); }
+  .nav-panel__link:hover .nav-panel__title { color: var(--c-blue-strong); }
+  .nav-panel__link:hover :global(.nav-panel__arrow) { transform: translateX(4px); }
+  .nav-panel__link[aria-current='page'] .nav-panel__title { color: var(--c-blue-strong); }
+  .nav-panel__all { margin-top: var(--sp-2); border-top: var(--border); padding-top: var(--sp-3); width: 100%; font-size: var(--step--1); }
+
+  .site-header__cta { display: none; }
+
+  /* Pulsante menu (mobile/tablet) */
+  .menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+    padding: 0 0.25rem 0 0.75rem;
+    margin-right: -0.25rem;
+    border: 0;
+    background: none;
+    color: var(--c-ink);
+    font-weight: 600;
+    font-size: var(--step--1);
+  }
+  .menu-toggle :global(.icon) { width: 1.5rem; height: 1.5rem; }
+  .menu-toggle :global(.menu-toggle__close) { display: none; }
+  .menu-toggle[aria-expanded='true'] :global(.menu-toggle__open) { display: none; }
+  .menu-toggle[aria-expanded='true'] :global(.menu-toggle__close) { display: block; }
+
+  @media (min-width: 40rem) {
+    .site-header__cta { display: inline-flex; }
+  }
+  @media (min-width: 64rem) {
+    .site-nav { display: block; }
+    .menu-toggle { display: none; }
+    .site-header__inner { gap: var(--sp-4); }
+  }
+
+  /* Menu mobile */
+  .mobile-menu {
+    position: fixed;
+    inset: var(--header-h) 0 0 0;
+    z-index: var(--z-menu);
+    background: var(--c-paper);
+    border-top: var(--border);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .mobile-menu:not([hidden]) { animation: menu-in var(--dur-2) var(--ease-out); }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-8px); } }
+  .mobile-menu__inner { display: flex; flex-direction: column; gap: var(--sp-6); padding-block: var(--sp-6) var(--sp-8); }
+  .mobile-menu__label { font-size: var(--step--1); font-weight: 600; color: var(--c-muted); margin-bottom: calc(-1 * var(--sp-4)); }
+  .mobile-menu__list { list-style: none; padding: 0; border-top: var(--border); }
+  .mobile-menu__list + .mobile-menu__list { border-top: 0; margin-top: calc(-1 * var(--sp-4)); }
+  .mobile-menu__list li { border-bottom: var(--border); }
+  .mobile-menu__list a {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    min-height: 3.25rem;
+    padding: var(--sp-3) 0;
+    color: var(--c-ink);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    line-height: 1.15;
+  }
+  .mobile-menu__list a[aria-current='page'] { color: var(--c-blue-strong); }
+  .mobile-menu__num { font-family: var(--font-sans); font-size: var(--step--1); color: var(--c-muted); min-width: 1.75rem; }
+  .mobile-menu__list a.mobile-menu__all { font-family: var(--font-sans); font-size: var(--step-0); font-weight: 600; align-items: center; }
+  .mobile-menu__footer { display: grid; gap: var(--sp-5); }
+  .mobile-menu__footer .btn { width: 100%; justify-content: space-between; }
+  .mobile-menu__direct { list-style: none; padding: 0; display: grid; gap: var(--sp-2); }
+  .mobile-menu__direct a { display: inline-flex; align-items: center; gap: var(--sp-3); min-height: 2.75rem; color: var(--c-ink); text-decoration: none; font-weight: 500; }
+  @media (min-width: 64rem) { .mobile-menu { display: none !important; } }
+</style>

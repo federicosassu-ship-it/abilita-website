@@ -1,0 +1,97 @@
+---
+/**
+ * Griglia dei loghi "Abbiamo lavorato con" (contenuto verificato dal sito attuale).
+ * Loghi in scala di grigi, a colori al passaggio del mouse; nomi completi nel testo alternativo.
+ */
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { partners } from '../data/partners';
+
+interface Props { featuredOnly?: boolean; linked?: boolean }
+const { featuredOnly = false, linked = false } = Astro.props;
+const items = featuredOnly ? partners.filter((p) => p.featured) : partners;
+const others = partners.length - items.length;
+---
+<ul class:list={['logo-wall', { 'logo-wall--compact': featuredOnly }]} role="list">
+  {items.map((p) => (
+    <li class="logo-wall__item">
+      {linked ? (
+        <a class="logo-wall__cell" href={p.url} target="_blank" rel="noopener noreferrer">
+          <Image src={p.logo} alt={p.name} width={Math.min(p.logo.width, 360)} class="logo-wall__img" />
+          <span class="visually-hidden"> (sito esterno, si apre in una nuova scheda)</span>
+          <Icon name="arrow-up-right" class="logo-wall__ext" />
+        </a>
+      ) : (
+        <div class="logo-wall__cell">
+          <Image src={p.logo} alt={p.name} width={Math.min(p.logo.width, 360)} class="logo-wall__img" />
+        </div>
+      )}
+    </li>
+  ))}
+  {featuredOnly && others > 0 && (
+    <li class="logo-wall__item logo-wall__item--more">
+      <a class="logo-wall__cell logo-wall__more" href="/network/" aria-label={`Altre ${others} organizzazioni con cui abbiamo lavorato`}>
+        <span class="logo-wall__more-num">+{others}</span>
+        <span>organizzazioni <Icon name="arrow-right" /></span>
+      </a>
+    </li>
+  )}
+</ul>
+
+<style>
+  .logo-wall {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--c-line);
+    border-left: 1px solid var(--c-line);
+    background: var(--c-white);
+  }
+  .logo-wall__item { border-right: 1px solid var(--c-line); border-bottom: 1px solid var(--c-line); }
+  .logo-wall__cell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 100%;
+    min-height: 7.5rem;
+    padding: var(--sp-5);
+    color: var(--c-ink-2);
+  }
+  .logo-wall__cell :global(.logo-wall__img) {
+    width: auto;
+    max-width: min(100%, 9.5rem);
+    max-height: 3.5rem;
+    object-fit: contain;
+    filter: grayscale(1) contrast(1.15);
+    opacity: 0.9;
+    transition: filter var(--dur-2) var(--ease-out), opacity var(--dur-2) var(--ease-out);
+  }
+  a.logo-wall__cell:hover :global(.logo-wall__img),
+  a.logo-wall__cell:focus-visible :global(.logo-wall__img) { filter: none; opacity: 1; }
+  .logo-wall__cell :global(.logo-wall__ext) {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 1rem;
+    height: 1rem;
+    opacity: 0;
+    transition: opacity var(--dur-1);
+  }
+  a.logo-wall__cell:hover :global(.logo-wall__ext),
+  a.logo-wall__cell:focus-visible :global(.logo-wall__ext) { opacity: 1; }
+  a.logo-wall__cell:focus-visible { outline-offset: -4px; }
+  .logo-wall__more { align-content: center; gap: 0.25rem; color: var(--c-ink); text-decoration: none; font-weight: 600; text-align: center; }
+  .logo-wall__more span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .logo-wall__more-num { font-family: var(--font-display); font-weight: 400; font-size: var(--step-3); line-height: 1; color: var(--c-blue-strong); }
+  .logo-wall__more:hover { background: var(--c-paper); color: var(--c-ink); }
+
+  @media (min-width: 40rem) { .logo-wall { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 64rem) {
+    .logo-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .logo-wall--compact { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  }
+  @media (hover: none) {
+    .logo-wall__cell :global(.logo-wall__img) { filter: none; opacity: 1; }
+  }
+</style>

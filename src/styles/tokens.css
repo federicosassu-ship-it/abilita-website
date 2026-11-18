@@ -1,0 +1,130 @@
+/*
+ * Abilita — Design tokens
+ * Unica fonte di verità per colori, tipografia, spaziature e movimento.
+ * I valori di contrasto sono documentati in docs/03-direzione-creativa.md.
+ */
+:root {
+  /* ---------- Colore: brand ---------- */
+  --c-blue: #0f70b7;          /* Blu Abilita (primario, dal sito attuale) */
+  --c-blue-strong: #0b5c97;   /* Link e hover su chiaro — 6.4:1 su paper */
+  --c-blue-deep: #08446f;     /* Stati attivi */
+  --c-blue-tint: #e3eef7;     /* Superfici informative */
+  --c-blue-soft: #a9d0f0;     /* Testo secondario su inchiostro — 10.3:1 */
+  --c-magenta: #e61873;       /* Accento Abilita: solo segni grafici e focus (non per testo piccolo) */
+  --c-magenta-strong: #c0145f;/* Magenta per testo — 5.4:1 su paper */
+  --c-magenta-soft: #f06ba5;  /* Magenta su inchiostro — 5.8:1 */
+  --gradient-brand: linear-gradient(90deg, #e61873 0%, #0f70b7 100%);
+
+  /* ---------- Colore: neutri ---------- */
+  --c-ink: #0d1f30;           /* Testo principale e superfici scure — 15.2:1 su paper */
+  --c-ink-2: #3d4d5c;         /* Testo secondario — 7.9:1 su paper */
+  --c-muted: #5b6875;         /* Testo terziario — 5.2:1 su paper */
+  --c-paper: #f6f4ef;         /* Sfondo principale, carta calda */
+  --c-stone: #ece8e0;         /* Superficie alternata */
+  --c-white: #ffffff;
+  --c-line: #d8d2c6;          /* Filetti decorativi */
+  --c-line-strong: #7a8591;   /* Bordi dei controlli — 3.4:1 su paper */
+  --c-line-ink: rgb(255 255 255 / 0.16); /* Filetti su inchiostro */
+
+  /* ---------- Colore: semantici ---------- */
+  --c-success: #1d7a4e;
+  --c-success-tint: #e3f1e9;
+  --c-error: #b42318;
+  --c-error-tint: #fbe9e7;
+  --c-focus: var(--c-magenta);
+
+  /* ---------- Tipografia ---------- */
+  /* I font "Fallback" hanno metriche adattate (size-adjust) per ridurre gli spostamenti
+     di layout mentre i font web si caricano. Valori calcolati sui file dei font. */
+  --font-display: 'Fraunces Variable', 'Fraunces Fallback M', Georgia, serif;
+  --font-sans: 'Instrument Sans Variable', 'Instrument Fallback', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+
+  /* Scala fluida (320px → 1440px) */
+  --step--2: clamp(0.75rem, 0.74rem + 0.05vw, 0.8rem);
+  --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --step-1: clamp(1.125rem, 1.06rem + 0.33vw, 1.375rem);
+  --step-2: clamp(1.3rem, 1.16rem + 0.7vw, 1.75rem);
+  --step-3: clamp(1.6rem, 1.33rem + 1.35vw, 2.5rem);
+  --step-4: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
+  --step-5: clamp(2.5rem, 1.6rem + 4.5vw, 5.5rem);
+
+  --lh-tight: 1.04;
+  --lh-snug: 1.18;
+  --lh-body: 1.62;
+  --measure: 66ch;
+  --measure-narrow: 46ch;
+
+  /* ---------- Spaziature (base 4px) ---------- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4rem;
+  --sp-9: 6rem;
+  --sp-10: 8rem;
+  --section-y: clamp(4.5rem, 2.75rem + 6vw, 9rem);
+  --gutter: clamp(1rem, 0.43rem + 2.86vw, 3rem);
+  --col-gap: clamp(1rem, 0.6rem + 2vw, 2.5rem);
+  --container: 82rem;
+  --header-h: 4.5rem;
+
+  /* ---------- Forma ---------- */
+  --radius-s: 2px;
+  --radius-m: 4px;
+  --border: 1px solid var(--c-line);
+  --shadow-pop: 0 1px 2px rgb(13 31 48 / 0.06), 0 12px 32px -8px rgb(13 31 48 / 0.18);
+
+  /* ---------- Movimento ---------- */
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 160ms;
+  --dur-2: 280ms;
+  --dur-3: 640ms;
+
+  /* ---------- Livelli ---------- */
+  --z-header: 50;
+  --z-menu: 60;
+  --z-skip: 100;
+}
+
+@media (max-width: 63.99rem) {
+  :root {
+    --header-h: 4rem;
+  }
+}
+
+/* Titoli più grandi su desktop: Fraunces è più stretto a dimensioni ottiche maggiori */
+@media (min-width: 64rem) {
+  :root {
+    --font-display: 'Fraunces Variable', 'Fraunces Fallback L', Georgia, serif;
+  }
+}
+
+@font-face {
+  font-family: 'Fraunces Fallback M';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif'), local('Tinos');
+  size-adjust: 111%;
+  ascent-override: 88%;
+  descent-override: 23%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Fraunces Fallback L';
+  src: local('Times New Roman'), local('TimesNewRomanPSMT'), local('Liberation Serif'), local('Tinos');
+  size-adjust: 104%;
+  ascent-override: 94%;
+  descent-override: 24.5%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'Instrument Fallback';
+  src: local('Arial'), local('ArialMT'), local('Liberation Sans'), local('Arimo'), local('Helvetica');
+  size-adjust: 103.6%;
+  ascent-override: 93.6%;
+  descent-override: 24.1%;
+  line-gap-override: 0%;
+}

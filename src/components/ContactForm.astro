@@ -1,0 +1,201 @@
+---
+/**
+ * Modulo di contatto con miglioramento progressivo:
+ * - senza JavaScript: invio classico al gestore (PUBLIC_FORM_ENDPOINT, predefinito /api/contatto.php)
+ *   e redirect alle pagine /contatti/grazie/ o /contatti/errore/;
+ * - con JavaScript: validazione in linea, riepilogo errori, invio asincrono, conferma nella pagina.
+ * Anti-spam senza tracciamento: campo esca (honeypot), tempo minimo di compilazione, limite per IP lato server.
+ */
+import Icon from './Icon.astro';
+import { inquiryTopics } from '../data/services';
+import { config, company, legalLinks } from '../data/site';
+---
+<div class="cform-wrap" id="modulo">
+  <form
+    class="cform"
+    action={config.formEndpoint}
+    method="post"
+    accept-charset="UTF-8"
+    data-contact-form
+    aria-describedby="cform-intro"
+  >
+    <p class="cform__intro" id="cform-intro">Tutti i campi sono obbligatori, salvo dove indicato.</p>
+
+    <div class="cform__summary" tabindex="-1" hidden data-summary>
+      <p class="cform__summary-title" data-summary-title></p>
+      <ul role="list" data-summary-list></ul>
+    </div>
+
+    <div class="cform__grid">
+      <div class="field" data-field>
+        <label class="field__label" for="f-nome">Nome e cognome</label>
+        <input class="field__control" id="f-nome" name="nome" type="text" autocomplete="name" required minlength="2" maxlength="100" aria-describedby="f-nome-err" />
+        <p class="field__error" id="f-nome-err" data-error></p>
+      </div>
+
+      <div class="field" data-field>
+        <label class="field__label" for="f-email">Email</label>
+        <input class="field__control" id="f-email" name="email" type="email" autocomplete="email" inputmode="email" required maxlength="150" spellcheck="false" aria-describedby="f-email-hint f-email-err" />
+        <p class="field__hint" id="f-email-hint">Ti risponderemo a questo indirizzo.</p>
+        <p class="field__error" id="f-email-err" data-error></p>
+      </div>
+
+      <div class="field" data-field>
+        <label class="field__label" for="f-azienda">Azienda o organizzazione <span class="field__opt">(facoltativo)</span></label>
+        <input class="field__control" id="f-azienda" name="azienda" type="text" autocomplete="organization" maxlength="150" aria-describedby="f-azienda-err" />
+        <p class="field__error" id="f-azienda-err" data-error></p>
+      </div>
+
+      <div class="field" data-field>
+        <label class="field__label" for="f-telefono">Telefono <span class="field__opt">(facoltativo)</span></label>
+        <input class="field__control" id="f-telefono" name="telefono" type="tel" autocomplete="tel" inputmode="tel" maxlength="25" aria-describedby="f-telefono-hint f-telefono-err" />
+        <p class="field__hint" id="f-telefono-hint">Se preferisci essere richiamato.</p>
+        <p class="field__error" id="f-telefono-err" data-error></p>
+      </div>
+
+      <div class="field field--full" data-field>
+        <label class="field__label" for="f-ambito">Ambito di interesse <span class="field__opt">(facoltativo)</span></label>
+        <div class="field__select">
+          <select class="field__control" id="f-ambito" name="ambito" aria-describedby="f-ambito-err">
+            <option value="">Seleziona un ambito</option>
+            {inquiryTopics.map((t) => <option value={t.value}>{t.label}</option>)}
+          </select>
+          <Icon name="chevron-down" class="field__chevron" />
+        </div>
+        <p class="field__error" id="f-ambito-err" data-error></p>
+      </div>
+
+      <div class="field field--full" data-field>
+        <label class="field__label" for="f-messaggio">Messaggio</label>
+        <textarea class="field__control" id="f-messaggio" name="messaggio" rows="6" required minlength="10" maxlength="5000" aria-describedby="f-messaggio-hint f-messaggio-err"></textarea>
+        <p class="field__hint" id="f-messaggio-hint">Obiettivi, tempi, situazione attuale: bastano poche righe.</p>
+        <p class="field__error" id="f-messaggio-err" data-error></p>
+      </div>
+    </div>
+
+    <div class="cform__hp" aria-hidden="true">
+      <label for="f-sito">Non compilare questo campo</label>
+      <input id="f-sito" name="sito_web" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <input type="hidden" name="ts" value="" data-ts />
+    <input type="hidden" name="pagina" value="/contatti/" data-page />
+
+    <div class="cform__footer">
+      <p class="cform__privacy">
+        Usiamo i tuoi dati solo per rispondere alla richiesta, come descritto nella
+        <a href={legalLinks.privacy} rel="noopener">privacy policy</a>.
+      </p>
+      <button class="btn cform__submit" type="submit" data-submit>
+        <span data-submit-label>Invia la richiesta</span>
+        <span class="cform__spinner" aria-hidden="true"><i></i><i></i><i></i></span>
+        <Icon name="arrow-right" class="cform__arrow" />
+      </button>
+    </div>
+
+    <div class="cform__status" role="status" aria-live="polite" data-status></div>
+  </form>
+
+  <div class="cform-success" hidden data-success>
+    <span class="cform-success__mark" aria-hidden="true"><Icon name="check" /></span>
+    <h2 class="cform-success__title" tabindex="-1" data-success-title>Grazie, abbiamo ricevuto la tua richiesta.</h2>
+    <p>Ti risponderemo all’indirizzo <strong data-success-email></strong> per fissare un primo confronto.</p>
+    <p>Se vuoi aggiungere dettagli o allegati, scrivici a <a href={`mailto:${company.email}`}>{company.email}</a>.</p>
+    <div class="btn-row">
+      <a class="link-arrow" href="/servizi/">Scopri i servizi <Icon name="arrow-right" /></a>
+      <a class="link-arrow" href="/">Torna alla home <Icon name="arrow-right" /></a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { initContactForm } from '../scripts/contact-form';
+  initContactForm();
+</script>
+
+<style>
+  .cform { display: grid; gap: var(--sp-5); }
+  .cform__intro { font-size: var(--step--1); color: var(--c-ink-2); }
+  .cform__grid { display: grid; gap: var(--sp-5) var(--col-gap); }
+  @media (min-width: 48rem) {
+    .cform__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .field--full { grid-column: 1 / -1; }
+  }
+
+  .field { display: grid; gap: var(--sp-2); align-content: start; }
+  .field__label { font-weight: 600; font-size: var(--step-0); line-height: 1.3; }
+  .field__opt { font-weight: 400; color: var(--c-muted); }
+  .field__hint { font-size: var(--step--1); color: var(--c-ink-2); order: 3; }
+  .field__control {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--radius-s);
+    background: var(--c-white);
+    color: var(--c-ink);
+    font-size: max(16px, var(--step-0));
+    line-height: 1.4;
+    transition: border-color var(--dur-1), box-shadow var(--dur-1);
+    appearance: none;
+  }
+  textarea.field__control { min-height: 9rem; resize: vertical; }
+  .field__control:hover { border-color: var(--c-ink); }
+  .field__control:focus-visible { outline: 2px solid var(--c-focus); outline-offset: 1px; border-color: var(--c-ink); }
+  .field__control[aria-invalid='true'] { border-color: var(--c-error); box-shadow: inset 3px 0 0 var(--c-error); }
+  .field__control:disabled { background: var(--c-stone); cursor: not-allowed; }
+  .field__select { position: relative; }
+  .field__select select { padding-right: 2.75rem; cursor: pointer; }
+  .field__select :global(.field__chevron) { position: absolute; right: 0.9rem; top: 50%; translate: 0 -50%; pointer-events: none; width: 1.1rem; height: 1.1rem; }
+  .field__error { display: flex; gap: 0.4rem; align-items: flex-start; color: var(--c-error); font-size: var(--step--1); font-weight: 500; order: 4; }
+  .field__error:empty { display: none; }
+
+  .cform__hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
+  .cform__summary {
+    padding: var(--sp-4) var(--sp-5);
+    border: 1px solid var(--c-error);
+    border-left-width: 4px;
+    background: var(--c-error-tint);
+  }
+  .cform__summary:focus { outline: 2px solid var(--c-focus); outline-offset: 2px; }
+  .cform__summary-title { font-weight: 600; color: var(--c-error); }
+  .cform__summary ul { margin-top: var(--sp-2); list-style: none; padding: 0; display: grid; gap: 0.25rem; }
+  .cform__summary a { color: var(--c-ink); }
+
+  .cform__footer { display: grid; gap: var(--sp-4); align-items: center; padding-top: var(--sp-2); }
+  .cform__privacy { font-size: var(--step--1); color: var(--c-ink-2); max-width: 48ch; }
+  .cform__submit { justify-self: start; min-width: 14rem; justify-content: space-between; }
+  @media (max-width: 39.99rem) { .cform__submit { width: 100%; } }
+  @media (min-width: 64rem) { .cform__footer { grid-template-columns: 1fr auto; } }
+
+  .cform__spinner { display: none; gap: 3px; }
+  .cform__spinner i { width: 5px; height: 5px; background: currentColor; animation: px-blink 900ms infinite ease-in-out; }
+  .cform__spinner i:nth-child(2) { animation-delay: 150ms; }
+  .cform__spinner i:nth-child(3) { animation-delay: 300ms; }
+  @keyframes px-blink { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+  .cform[aria-busy='true'] .cform__spinner { display: inline-flex; }
+  .cform[aria-busy='true'] :global(.cform__arrow) { display: none; }
+
+  .cform__status:empty { display: none; }
+  .cform__status {
+    padding: var(--sp-4) var(--sp-5);
+    border-left: 4px solid var(--c-error);
+    background: var(--c-error-tint);
+    color: var(--c-ink);
+  }
+
+  .cform-success {
+    display: grid;
+    gap: var(--sp-4);
+    justify-items: start;
+    padding: clamp(1.5rem, 1rem + 2vw, 3rem);
+    background: var(--c-white);
+    border: 1px solid var(--c-line);
+    border-top: 4px solid var(--c-success);
+  }
+  .cform-success__mark { display: grid; place-items: center; width: 3rem; height: 3rem; background: var(--c-success-tint); color: var(--c-success); }
+  .cform-success__mark :global(.icon) { width: 1.6rem; height: 1.6rem; }
+  .cform-success__title { font-size: var(--step-3); max-width: 22ch; }
+  .cform-success__title:focus { outline: none; }
+  .cform-success p { color: var(--c-ink-2); max-width: 52ch; }
+</style>

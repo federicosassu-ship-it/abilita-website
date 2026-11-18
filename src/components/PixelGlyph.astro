@@ -1,0 +1,31 @@
+---
+/**
+ * Pittogrammi 3×3 costruiti con i pixel del logo. Sostituiscono le icone generiche
+ * nelle sezioni concettuali (differenziazione, principi, metodo).
+ * 0 = vuoto · 1 = colore corrente · 2 = accento magenta
+ */
+export type GlyphName = 'rows' | 'steps' | 'hub' | 'overlap' | 'target' | 'growth' | 'measure' | 'clarity';
+interface Props { name: GlyphName; class?: string }
+const { name, class: className = '' } = Astro.props;
+
+const glyphs: Record<GlyphName, number[][]> = {
+  rows: [[1, 1, 1], [0, 0, 0], [1, 1, 2]],
+  steps: [[1, 0, 0], [1, 1, 0], [1, 1, 2]],
+  hub: [[1, 0, 1], [0, 2, 0], [1, 0, 1]],
+  overlap: [[1, 1, 0], [1, 2, 1], [0, 1, 1]],
+  target: [[1, 1, 1], [1, 2, 1], [1, 1, 1]],
+  growth: [[0, 0, 2], [0, 1, 1], [1, 1, 1]],
+  measure: [[1, 0, 0], [1, 0, 2], [1, 1, 1]],
+  clarity: [[2, 0, 0], [0, 1, 0], [0, 0, 1]],
+};
+const g = glyphs[name];
+---
+<svg class:list={['glyph', className]} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+  {g.flatMap((row, r) => row.map((v, c) => v ? (
+    <rect x={1.5 + c * 7.5} y={1.5 + r * 7.5} width="6" height="6" fill={v === 2 ? 'var(--glyph-accent, #E61873)' : 'currentColor'} />
+  ) : null))}
+</svg>
+
+<style>
+  .glyph { width: 2rem; height: 2rem; flex: none; }
+</style>

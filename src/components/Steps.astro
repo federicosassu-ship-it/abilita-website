@@ -1,0 +1,60 @@
+---
+/** Sequenza di passaggi numerati (metodo, processo di servizio, "cosa succede dopo"). */
+interface Props {
+  items: { title: string; text: string }[];
+  surface?: 'light' | 'dark' | 'blue';
+  columns?: 3 | 4;
+  label?: string;
+}
+const { items, surface = 'light', columns = 4, label } = Astro.props;
+---
+<ol class:list={['steps', `steps--${surface}`, `steps--cols-${columns}`]} role="list" aria-label={label}>
+  {items.map((step, i) => (
+    <li class="steps__item" data-reveal style={`--reveal-delay:${i * 80}ms`}>
+      <span class="steps__num tabular" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+      <h3 class="steps__title">{step.title}</h3>
+      <p class="steps__text">{step.text}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .steps { list-style: none; padding: 0; display: grid; gap: 0; counter-reset: step; }
+  .steps__item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    column-gap: var(--sp-4);
+    row-gap: var(--sp-2);
+    padding-block: var(--sp-5);
+    border-top: 1px solid var(--c-line);
+  }
+  .steps__num { grid-row: span 2; font-size: var(--step--1); font-weight: 600; color: var(--c-muted); padding-top: 0.3rem; }
+  .steps__num::before {
+    content: '';
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: var(--c-magenta);
+  }
+  .steps__title { font-size: var(--step-2); }
+  .steps__text { color: var(--c-ink-2); max-width: 34ch; }
+  .steps--dark .steps__item { border-top-color: var(--c-line-ink); }
+  .steps--dark .steps__num { color: var(--c-blue-soft); }
+  .steps--dark .steps__text { color: var(--c-blue-soft); }
+  .steps--blue .steps__text { color: var(--c-white); }
+  .steps--blue .steps__item { border-top-color: rgb(255 255 255 / 0.35); }
+  .steps--blue .steps__num { color: inherit; }
+  .steps--blue .steps__num::before { background: var(--c-white); }
+
+  @media (min-width: 48rem) {
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--col-gap); }
+  }
+  @media (min-width: 64rem) {
+    .steps--cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .steps--cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .steps__item { grid-template-columns: 1fr; padding-top: var(--sp-5); }
+    .steps__num { grid-row: auto; padding-top: 0; margin-bottom: var(--sp-3); }
+  }
+</style>

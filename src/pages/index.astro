@@ -1,0 +1,242 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import PixelField from '../components/PixelField.astro';
+import PixelGlyph from '../components/PixelGlyph.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServiceRows from '../components/ServiceRows.astro';
+import Steps from '../components/Steps.astro';
+import LogoWall from '../components/LogoWall.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { config } from '../data/site';
+import { method } from '../data/method';
+
+const context = [
+  { word: 'Trovare', text: 'E-commerce, marketplace, motori di ricerca, social: ogni canale ha regole proprie e chiede un presidio costante.' },
+  { word: 'Capire', text: 'Origine, qualità, metodo di produzione: se il valore non è raccontato con chiarezza, il confronto si riduce al prezzo.' },
+  { word: 'Scegliere', text: 'Ogni euro investito in comunicazione deve potersi misurare rispetto agli obiettivi di vendita.' },
+];
+
+const pillars = [
+  { glyph: 'rows', title: 'Conosciamo la filiera', text: 'Affrontiamo ogni giorno le sfide della filiera agroalimentare. Parliamo la lingua di chi produce, trasforma e distribuisce.' },
+  { glyph: 'steps', title: 'Dalla strategia all’esecuzione', text: 'Progettiamo e realizziamo piattaforme e-commerce e strategie di food marketing: chi pensa la strategia ne segue anche la messa in opera.' },
+  { glyph: 'hub', title: 'Una rete, un solo interlocutore', text: 'Per ogni progetto coinvolgiamo gli specialisti necessari, tra marketing, tecnologia e innovazione, e coordiniamo il lavoro per te.' },
+  { glyph: 'overlap', title: 'Ci mettiamo in gioco', text: 'Quando un progetto ha valore strategico anche per noi, valutiamo il co-investimento. E ti aiutiamo a individuare la finanza agevolata disponibile.' },
+] as const;
+
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${config.siteUrl}/#sito`,
+  url: `${config.siteUrl}/`,
+  name: 'Abilita',
+  inLanguage: 'it-IT',
+  publisher: { '@id': `${config.siteUrl}/#organizzazione` },
+}];
+---
+<Base
+  title="Abilita | E-commerce e marketing per l’agroalimentare"
+  description="Strategia, e-commerce, food marketing e digital advertising per imprese agricole e alimentari, cooperative e consorzi. Un solo interlocutore, obiettivi misurabili."
+  ogImage="home"
+  schema={schema}
+  legacyRedirects
+>
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="titolo-home">
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow">Digitale per la filiera agroalimentare</p>
+        <h1 id="titolo-home">Aiutiamo chi produce <em>bene</em> a vendere <em>meglio</em>.</h1>
+        <p class="lead hero__lead">
+          Strategia, e-commerce, food marketing e advertising per imprese agricole e alimentari, cooperative e consorzi: un unico progetto, un solo interlocutore, obiettivi chiari e misurabili.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="/contatti/" data-track="cta_click" data-track-props='{"posizione":"hero","etichetta":"Parliamo del tuo progetto"}'>
+            Parliamo del tuo progetto <Icon name="arrow-right" />
+          </a>
+          <a class="link-arrow" href="/servizi/" data-track="cta_click" data-track-props='{"posizione":"hero","etichetta":"Scopri i servizi"}'>
+            Scopri i servizi <Icon name="arrow-right" />
+          </a>
+        </div>
+      </div>
+      <div class="hero__visual">
+        <PixelField variant="hero" animate seed={11} />
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTESTO -->
+  <section class="section section--rule context" aria-labelledby="contesto">
+    <div class="container grid-12">
+      <div class="context__head">
+        <SectionHead
+          id="contesto"
+          num="01"
+          label="Il contesto"
+          width="wide"
+          title="Un buon prodotto non basta: il mercato deve poterlo <em>trovare</em>, <em>capire</em> e <em>scegliere</em>."
+        />
+      </div>
+      <ol class="context__list" role="list">
+        {context.map((item, i) => (
+          <li class="context__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <p class="context__word">{item.word}</p>
+            <p class="context__text">{item.text}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="context__bridge" data-reveal>Per questo lavoriamo su tre leve, collegate tra loro.</p>
+    </div>
+  </section>
+
+  <!-- SERVIZI -->
+  <section class="section surface-white" aria-labelledby="servizi">
+    <div class="container">
+      <div class="services__head">
+        <SectionHead
+          id="servizi"
+          num="02"
+          label="Servizi"
+          title="Tre leve, <em>un’unica strategia</em>."
+          lead="Puoi partire da un solo servizio. Quando serve, li colleghiamo: lo stesso obiettivo guida sito, comunicazione e campagne."
+        />
+        <a class="link-arrow services__all" href="/servizi/">Panoramica dei servizi <Icon name="arrow-right" /></a>
+      </div>
+      <ServiceRows position="home" />
+    </div>
+  </section>
+
+  <!-- PERCHÉ ABILITA -->
+  <section class="section surface-ink on-ink why" aria-labelledby="perche">
+    <div class="container">
+      <SectionHead
+        id="perche"
+        num="03"
+        label="Perché Abilita"
+        width="wide"
+        title="Un partner che conosce la filiera e <em>si mette in gioco</em>."
+      />
+      <ul class="why__list" role="list">
+        {pillars.map((p, i) => (
+          <li class="why__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <PixelGlyph name={p.glyph} class="why__glyph" />
+            <h3 class="why__title">{p.title}</h3>
+            <p class="why__text">{p.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- METODO -->
+  <section class="section method" aria-labelledby="metodo">
+    <div class="container">
+      <div class="method__head">
+        <SectionHead
+          id="metodo"
+          num="04"
+          label="Metodo"
+          title="Prima gli obiettivi, <em>poi gli strumenti</em>."
+          lead="Ogni progetto attraversa quattro fasi. La misura dei risultati non arriva alla fine: orienta il lavoro fin dall’inizio."
+        />
+      </div>
+      <Steps items={method} label="Le quattro fasi del metodo Abilita" />
+      <a class="link-arrow method__more" href="/chi-siamo/#metodo">Come lavoriamo <Icon name="arrow-right" /></a>
+    </div>
+  </section>
+
+  <!-- ESPERIENZE -->
+  <section class="section surface-stone proof" aria-labelledby="esperienze">
+    <div class="container grid-12">
+      <div class="proof__head">
+        <SectionHead
+          id="esperienze"
+          num="05"
+          label="Esperienze"
+          title="Con chi abbiamo lavorato."
+          lead="Piccole imprese e grandi consorzi, organizzazioni di produttori, startup innovative, università e realtà della consulenza."
+        />
+        <a class="link-arrow" href="/network/">Tutte le collaborazioni <Icon name="arrow-right" /></a>
+      </div>
+      <div class="proof__logos" data-reveal>
+        <LogoWall featuredOnly />
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    position="home"
+    title="Hai un prodotto da far crescere? <em>Parliamone.</em>"
+    text="Raccontaci obiettivi e punto di partenza: ti ricontattiamo per fissare un primo confronto."
+  />
+</Base>
+
+<style>
+  /* HERO */
+  .hero { padding-block: clamp(2.5rem, 1rem + 5vw, 6rem) clamp(4rem, 2rem + 6vw, 8rem); }
+  .hero__grid { display: grid; gap: var(--sp-7); align-items: center; }
+  .hero__text { display: grid; gap: var(--sp-5); justify-items: start; }
+  .hero h1 { max-width: 11.5ch; }
+  .hero h1 em { color: var(--c-blue-strong); }
+  .hero__lead { max-width: 40ch; }
+  .hero__text .btn-row { margin-top: var(--sp-2); }
+  .hero__visual { width: min(100%, 26rem); justify-self: center; }
+
+  @media (max-width: 47.99rem) {
+    .hero__visual { width: 100%; max-width: 13.5rem; justify-self: start; margin-top: var(--sp-2); }
+    .hero__text .btn-row { width: 100%; }
+    .hero__text .btn-row .btn { width: 100%; justify-content: space-between; }
+  }
+  @media (min-width: 64rem) {
+    .hero__grid { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); }
+    .hero__text { grid-column: 1 / span 7; }
+    .hero__visual { grid-column: 9 / span 4; width: 100%; justify-self: end; }
+  }
+
+  /* CONTESTO */
+  .context__head { grid-column: 1 / -1; }
+  .context__list { grid-column: 1 / -1; list-style: none; padding: 0; display: grid; gap: var(--sp-6); margin-top: var(--sp-4); }
+  .context__item { border-top: 1px solid var(--c-ink); padding-top: var(--sp-4); display: grid; gap: var(--sp-3); }
+  .context__word { font-family: var(--font-display); font-style: italic; font-size: var(--step-3); line-height: 1.1; color: var(--c-blue-strong); }
+  .context__text { color: var(--c-ink-2); max-width: 36ch; }
+  .context__bridge { grid-column: 1 / -1; font-family: var(--font-display); font-size: var(--step-2); line-height: 1.3; }
+  @media (min-width: 48rem) { .context__list { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--col-gap); } }
+  @media (min-width: 64rem) {
+    .context__head { grid-column: 1 / span 9; }
+    .context__bridge { grid-column: 1 / span 8; }
+  }
+
+  /* SERVIZI */
+  .services__head { display: grid; gap: var(--sp-5); margin-bottom: var(--sp-8); align-items: end; }
+  @media (min-width: 64rem) {
+    .services__head { grid-template-columns: 1fr auto; }
+  }
+
+  /* PERCHÉ */
+  .why__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--sp-7) var(--col-gap);
+    margin-top: var(--sp-8);
+  }
+  .why__item { display: grid; gap: var(--sp-3); align-content: start; border-top: 1px solid var(--c-line-ink); padding-top: var(--sp-5); }
+  .why__item :global(.why__glyph) { color: var(--c-white); --glyph-accent: var(--c-magenta-soft); margin-bottom: var(--sp-3); }
+  .why__title { font-size: var(--step-2); }
+  .why__text { color: var(--c-blue-soft); max-width: 34ch; }
+  @media (min-width: 48rem) { .why__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 80rem) { .why__list { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  /* METODO */
+  .method__head { margin-bottom: var(--sp-8); }
+  .method__more { margin-top: var(--sp-6); }
+
+  /* ESPERIENZE */
+  .proof__head { grid-column: 1 / -1; display: grid; gap: var(--sp-5); justify-items: start; align-content: start; }
+  .proof__logos { grid-column: 1 / -1; }
+  @media (min-width: 64rem) {
+    .proof__head { grid-column: 1 / span 4; }
+    .proof__logos { grid-column: 6 / span 7; }
+    .proof__logos :global(.logo-wall--compact) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+</style>

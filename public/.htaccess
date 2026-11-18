@@ -1,0 +1,57 @@
+# Abilita — configurazione Apache (hosting Aruba Linux)
+# Redirect dagli indirizzi del vecchio sito, pagina 404, cache e intestazioni di sicurezza.
+# Nota: HTTPS e il dominio con "www" sono già gestiti dall'hosting (verificato: abilita.biz → 301 → www).
+
+Options -Indexes
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Vecchia navigazione a pagina unica: /?p=sezione → nuove pagine (301, senza query string)
+  RewriteCond %{QUERY_STRING} (^|&)p=chi_siamo(&|$)
+  RewriteRule ^(index\.(php|html))?$ /chi-siamo/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=e_commerce(&|$)
+  RewriteRule ^(index\.(php|html))?$ /servizi/e-commerce/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=food_marketing(&|$)
+  RewriteRule ^(index\.(php|html))?$ /servizi/food-marketing/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=digital_advertising(&|$)
+  RewriteRule ^(index\.(php|html))?$ /servizi/digital-advertising/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=partner(&|$)
+  RewriteRule ^(index\.(php|html))?$ /network/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=lavora_con_noi(&|$)
+  RewriteRule ^(index\.(php|html))?$ /lavora-con-noi/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=contatti(&|$)
+  RewriteRule ^(index\.(php|html))?$ /contatti/? [R=301,L]
+  RewriteCond %{QUERY_STRING} (^|&)p=home(&|$)
+  RewriteRule ^(index\.(php|html))?$ /? [R=301,L]
+
+  # Richieste esplicite di index.php / index.html → home
+  RewriteCond %{THE_REQUEST} \s/index\.(php|html)[\s?]
+  RewriteRule ^index\.(php|html)$ / [R=301,L]
+
+  # Vecchia sitemap e file del vecchio sito
+  RewriteRule ^pagine/sitemap\.xml$ /sitemap-index.xml [R=301,L]
+  RewriteRule ^pagine/process\.php$ - [G,L]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), interest-cohort=()"
+
+  # File con hash nel nome (generati dalla build): cache di un anno
+  <If "%{REQUEST_URI} =~ m#^/_astro/#">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </If>
+  # HTML: sempre riconvalidato, per pubblicare gli aggiornamenti subito
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json image/svg+xml text/plain application/xml
+</IfModule>
