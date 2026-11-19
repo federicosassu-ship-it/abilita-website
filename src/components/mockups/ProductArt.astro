@@ -1,0 +1,51 @@
+---
+/**
+ * Illustrazioni geometriche di prodotti della filiera (nessun marchio reale),
+ * nello stile piatto del sistema visivo Abilita.
+ */
+interface Props { kind: 'cheese' | 'oil' | 'honey'; class?: string }
+const { kind, class: className = '' } = Astro.props;
+---
+<svg class:list={['product-art', className]} viewBox="0 0 200 160" aria-hidden="true" focusable="false">
+  {kind === 'cheese' && (
+    <g>
+      <ellipse cx="100" cy="122" rx="78" ry="16" fill="#e7dcc4" />
+      <path d="M22 82v36c0 9 35 18 78 18s78-9 78-18V82z" fill="#d9b779" />
+      <ellipse cx="100" cy="82" rx="78" ry="18" fill="#f1dca8" />
+      <path d="M100 82l62 -7v40l-62 9z" fill="#f6e6bd" />
+      <path d="M100 82l62-7" stroke="#c39a52" stroke-width="1.5" />
+      <rect x="40" y="96" width="6" height="6" fill="#c39a52" opacity=".55" />
+      <rect x="62" y="104" width="5" height="5" fill="#c39a52" opacity=".45" />
+      <rect x="128" y="96" width="5" height="5" fill="#d9b779" />
+      <rect x="146" y="88" width="6" height="6" fill="#e9cf91" />
+    </g>
+  )}
+  {kind === 'oil' && (
+    <g>
+      <ellipse cx="100" cy="146" rx="46" ry="7" fill="#e7dcc4" />
+      <rect x="90" y="10" width="20" height="14" fill="#0d1f30" />
+      <rect x="93" y="24" width="14" height="18" fill="#3f5a2a" />
+      <path d="M93 42c-22 10-28 24-28 44v56h70V86c0-20-6-34-28-44z" fill="#566d2f" />
+      <rect x="74" y="84" width="52" height="40" fill="#f6f4ef" />
+      <rect x="80" y="92" width="40" height="4" fill="#0d1f30" />
+      <rect x="80" y="100" width="28" height="3" fill="#5b6875" />
+      <rect x="80" y="112" width="8" height="8" fill="#e61873" />
+      <rect x="90" y="112" width="8" height="8" fill="#0f70b7" />
+    </g>
+  )}
+  {kind === 'honey' && (
+    <g>
+      <ellipse cx="100" cy="146" rx="50" ry="7" fill="#e7dcc4" />
+      <rect x="62" y="34" width="76" height="18" fill="#0d1f30" />
+      <path d="M58 56h84v74c0 8-6 14-14 14H72c-8 0-14-6-14-14z" fill="#e2a33a" />
+      <rect x="70" y="80" width="60" height="38" fill="#f6f4ef" />
+      <rect x="78" y="88" width="44" height="4" fill="#0d1f30" />
+      <rect x="78" y="96" width="30" height="3" fill="#5b6875" />
+      <rect x="78" y="106" width="7" height="7" fill="#e61873" />
+    </g>
+  )}
+</svg>
+
+<style>
+  .product-art { width: 100%; height: auto; display: block; }
+</style>

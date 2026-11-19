@@ -7,6 +7,7 @@ import Faq from '../../components/Faq.astro';
 import PixelGlyph from '../../components/PixelGlyph.astro';
 import Icon from '../../components/Icon.astro';
 import CtaBand from '../../components/CtaBand.astro';
+import ServiceMockup from '../../components/mockups/ServiceMockup.astro';
 import { services, getService, type Service } from '../../data/services';
 import { config } from '../../data/site';
 
@@ -79,9 +80,21 @@ const schema = [{
     </div>
   </section>
 
+  <section class="section practice" aria-labelledby="in-pratica">
+    <div class="container grid-12">
+      <div class="practice__text">
+        <SectionHead id="in-pratica" num="03" label="In pratica" title={s.practice.title} lead={s.practice.text} />
+        <p class="practice__note">Illustrazione di esempio: non rappresenta clienti né dati reali.</p>
+      </div>
+      <div class="practice__visual" data-reveal>
+        <ServiceMockup variant={s.pattern} />
+      </div>
+    </div>
+  </section>
+
   <section class="section surface-ink on-ink" aria-labelledby="benefici">
     <div class="container">
-      <SectionHead id="benefici" num="03" label="Cosa cambia per te" title="Il valore, <em>in concreto</em>." />
+      <SectionHead id="benefici" num="04" label="Cosa cambia per te" title="Il valore, <em>in concreto</em>." />
       <ul class="benefits" role="list">
         {s.benefits.map((b, i) => (
           <li class="benefits__item" data-reveal style={`--reveal-delay:${i * 90}ms`}>
@@ -97,7 +110,7 @@ const schema = [{
   <section class="section" aria-labelledby="processo">
     <div class="container">
       <div class="process__head">
-        <SectionHead id="processo" num="04" label="Come lavoriamo" title="Dall’analisi <em>ai risultati</em>." />
+        <SectionHead id="processo" num="05" label="Come lavoriamo" title="Dall’analisi <em>ai risultati</em>." />
       </div>
       <Steps items={s.process} label={`Fasi del servizio ${s.name}`} />
     </div>
@@ -106,7 +119,7 @@ const schema = [{
   <section class="section surface-stone" aria-labelledby="insieme">
     <div class="container grid-12">
       <div class="related__head">
-        <SectionHead id="insieme" num="05" label="Con gli altri servizi" title="Più efficace, <em>se integrato</em>." lead={s.related.text} />
+        <SectionHead id="insieme" num="06" label="Con gli altri servizi" title="Più efficace, <em>se integrato</em>." lead={s.related.text} />
       </div>
       <ul class="related" role="list">
         {related.map((r) => (
@@ -124,7 +137,7 @@ const schema = [{
   <section class="section" aria-labelledby="domande">
     <div class="container grid-12">
       <div class="faq__head">
-        <SectionHead id="domande" num="06" label="Domande frequenti" title="Domande <em>e risposte</em>." />
+        <SectionHead id="domande" num="07" label="Domande frequenti" title="Domande <em>e risposte</em>." />
       </div>
       <div class="faq__body">
         <Faq items={s.faq} />
@@ -170,6 +183,23 @@ const schema = [{
   @media (min-width: 48rem) { .benefits { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
   .process__head { margin-bottom: var(--sp-8); }
+
+  .practice { overflow: hidden; }
+  .practice__text, .practice__visual { grid-column: 1 / -1; }
+  .practice__text { display: grid; gap: var(--sp-5); align-content: center; }
+  .practice__note { font-size: var(--step--1); color: var(--c-muted); }
+  .practice__visual { position: relative; isolation: isolate; }
+  .practice__visual::before {
+    content: '';
+    position: absolute;
+    inset: 8% -40% -10% 12%;
+    background: var(--c-stone);
+    z-index: -1;
+  }
+  @media (min-width: 64rem) {
+    .practice__text { grid-column: 1 / span 4; }
+    .practice__visual { grid-column: 6 / span 7; }
+  }
 
   .related { list-style: none; padding: 0; display: grid; gap: var(--sp-4); }
   .related__item {

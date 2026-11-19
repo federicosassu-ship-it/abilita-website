@@ -1,0 +1,190 @@
+---
+/**
+ * Mockup illustrativi dei servizi (HTML/CSS, nessuna immagine esterna).
+ * Mostrano il tipo di lavoro, NON progetti o dati reali: nessun cliente, nessun numero.
+ * Tutto il contenuto è decorativo per gli screen reader; la didascalia nella pagina lo descrive.
+ */
+import ProductArt from './ProductArt.astro';
+import Icon from '../Icon.astro';
+interface Props { variant: 'ecommerce' | 'food' | 'ads' }
+const { variant } = Astro.props;
+const bars = [38, 52, 46, 64, 58, 72, 80, 76, 88, 94];
+---
+<div class:list={['mock', `mock--${variant}`]} aria-hidden="true">
+  {variant === 'ecommerce' && (
+    <div class="mock__stage">
+      <div class="win">
+        <div class="win__bar"><i></i><i></i><i></i><span class="win__url"><Icon name="check" /> Il tuo e-commerce</span></div>
+        <div class="shop">
+          <div class="shop__media"><ProductArt kind="cheese" /></div>
+          <div class="shop__info">
+            <span class="shop__crumb">Formaggi · Stagionati</span>
+            <span class="shop__title">Pecorino stagionato</span>
+            <span class="shop__meta">12 mesi · forma intera</span>
+            <span class="shop__lines"><b></b><b></b><b class="s"></b></span>
+            <span class="shop__row"><span class="shop__qty">− 1 +</span><span class="shop__btn">Aggiungi al carrello</span></span>
+            <span class="shop__trust"><span>Pagamento sicuro</span><span>Spedizione tracciata</span></span>
+          </div>
+        </div>
+        <div class="thumbs"><div><ProductArt kind="oil" /></div><div><ProductArt kind="honey" /></div><div><ProductArt kind="cheese" /></div></div>
+      </div>
+      <div class="float float--order"><span class="float__dot"></span><span><b>Nuovo ordine</b><small>2 prodotti · pagato</small></span></div>
+      <div class="float float--channels"><small>Canali attivi</small><span class="chip">Sito</span><span class="chip">Marketplace</span></div>
+    </div>
+  )}
+
+  {variant === 'food' && (
+    <div class="mock__stage brand">
+      <div class="label">
+        <span class="label__px"><i></i><i></i><i></i></span>
+        <span class="label__name">Il tuo olio</span>
+        <span class="label__sub">Olio extravergine di oliva</span>
+        <span class="label__rule"></span>
+        <span class="label__note">Raccolta a mano · Frantoio aziendale</span>
+        <div class="label__bottle"><ProductArt kind="oil" /></div>
+      </div>
+      <div class="board">
+        <span class="board__title">Posizionamento</span>
+        <span class="board__tags"><span>Origine</span><span>Metodo</span><span>Stagionalità</span></span>
+        <span class="board__title">Palette</span>
+        <span class="board__sw"><i style="background:#566d2f"></i><i style="background:#e2a33a"></i><i style="background:#f6f4ef"></i><i style="background:#0d1f30"></i></span>
+        <span class="board__title">Tono di voce</span>
+        <span class="board__quote">“Ti raccontiamo da dove viene, non solo quanto è buono.”</span>
+      </div>
+      <div class="post">
+        <div class="post__img"><ProductArt kind="honey" /></div>
+        <span class="post__lines"><b></b><b class="s"></b></span>
+        <span class="post__actions"><i></i><i></i><i></i></span>
+      </div>
+    </div>
+  )}
+
+  {variant === 'ads' && (
+    <div class="mock__stage">
+      <div class="win dash">
+        <div class="win__bar"><i></i><i></i><i></i><span class="win__url">Report campagne</span></div>
+        <div class="dash__head">
+          <span><small>Obiettivo</small><b>Vendite online</b></span>
+          <span class="dash__chips"><span class="chip">Ricerca</span><span class="chip">Social</span><span class="chip">Remarketing</span></span>
+        </div>
+        <div class="dash__kpis">
+          {['Copertura', 'Clic', 'Conversioni', 'Costo per acquisizione'].map((k) => (
+            <span class="kpi"><small>{k}</small><b></b></span>
+          ))}
+        </div>
+        <div class="dash__chart">
+          {bars.map((h, i) => <i style={`height:${h}%;--d:${i * 50}ms`} class={i > 6 ? 'hi' : ''}></i>)}
+          <svg viewBox="0 0 100 40" preserveAspectRatio="none"><polyline points="0,32 11,30 22,31 33,24 44,26 55,18 66,15 77,16 88,9 100,6" fill="none" stroke="#e61873" stroke-width="1.6" vector-effect="non-scaling-stroke" /></svg>
+        </div>
+        <div class="dash__foot"><span>Ottimizzazione settimanale</span><span class="dash__ok">Budget sotto controllo</span></div>
+      </div>
+      <div class="float float--target"><span class="target"><i></i><i></i><i></i></span><span><b>Pubblico</b><small>Interessi · area · momento</small></span></div>
+    </div>
+  )}
+</div>
+
+<style>
+  .mock { --ink: var(--c-ink); position: relative; width: 100%; font-family: var(--font-sans); color: var(--c-ink); }
+  .mock__stage { position: relative; padding: 1.25rem 0.5rem 2.25rem; }
+  .chip { display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.2rem 0.5rem; background: var(--c-blue-tint); color: var(--c-blue-deep); }
+
+  /* Finestra browser */
+  .win { position: relative; background: var(--c-white); border: 1px solid var(--c-line); box-shadow: 0 30px 60px -30px rgb(13 31 48 / .35); }
+  .win__bar { display: flex; align-items: center; gap: 0.35rem; padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--c-line); background: var(--c-paper); }
+  .win__bar i { width: 0.5rem; height: 0.5rem; background: var(--c-line); }
+  .win__bar i:first-child { background: var(--c-magenta); }
+  .win__url { margin-left: 0.6rem; flex: 1; display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; color: var(--c-muted); background: var(--c-white); border: 1px solid var(--c-line); padding: 0.2rem 0.55rem; }
+  .win__url :global(.icon) { width: 0.8rem; height: 0.8rem; color: var(--c-success); }
+
+  /* Negozio */
+  .shop { display: grid; grid-template-columns: 1.1fr 1fr; gap: 1rem; padding: 1rem; align-items: center; }
+  .shop__media { background: var(--c-stone); padding: 1rem 0.75rem; }
+  .shop__info { display: grid; gap: 0.4rem; }
+  .shop__crumb { font-size: 0.62rem; color: var(--c-muted); }
+  .shop__title { font-family: var(--font-display); font-size: clamp(1rem, 0.8rem + 1vw, 1.45rem); line-height: 1.1; }
+  .shop__meta { font-size: 0.72rem; color: var(--c-ink-2); }
+  .shop__lines { display: grid; gap: 0.3rem; margin-block: 0.2rem; }
+  .shop__lines b, .post__lines b { display: block; height: 0.35rem; background: var(--c-stone); }
+  .shop__lines b.s, .post__lines b.s { width: 60%; }
+  .shop__row { display: flex; gap: 0.4rem; align-items: center; }
+  .shop__qty { font-size: 0.7rem; border: 1px solid var(--c-line); padding: 0.35rem 0.5rem; white-space: nowrap; }
+  .shop__btn { flex: 1; background: var(--c-ink); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 0.45rem 0.6rem; text-align: center; white-space: nowrap; }
+  .shop__trust { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; font-size: 0.6rem; color: var(--c-muted); }
+  .shop__trust span::before { content: ''; display: inline-block; width: 0.35rem; height: 0.35rem; background: var(--c-success); margin-right: 0.3rem; vertical-align: middle; }
+  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; padding: 0 1rem 1rem; }
+  .thumbs > div { background: var(--c-paper); border: 1px solid var(--c-line); padding: 0.4rem; }
+
+  /* Schede flottanti */
+  .float { position: absolute; display: flex; align-items: center; gap: 0.55rem; background: var(--c-white); border: 1px solid var(--c-line); padding: 0.6rem 0.8rem; box-shadow: var(--shadow-pop); font-size: 0.72rem; }
+  .float b { display: block; font-size: 0.75rem; }
+  .float small { display: block; color: var(--c-muted); font-size: 0.64rem; }
+  .float__dot { width: 0.6rem; height: 0.6rem; background: var(--c-success); }
+  .float--order { right: -0.25rem; top: 0; }
+  .float--channels { left: -0.25rem; bottom: 0.4rem; flex-wrap: wrap; max-width: 15rem; }
+  .float--channels small { width: 100%; }
+  .float--target { right: -0.25rem; bottom: -0.4rem; }
+  .target { position: relative; width: 1.6rem; height: 1.6rem; flex: none; }
+  .target i { position: absolute; inset: 0; border: 2px solid var(--c-blue); }
+  .target i:nth-child(2) { inset: 0.35rem; border-color: var(--c-ink); }
+  .target i:nth-child(3) { inset: 0.6rem; background: var(--c-magenta); border: 0; }
+
+  /* Brand */
+  .brand { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; gap: 0.9rem; }
+  .label { grid-row: span 2; position: relative; background: #fbf7ee; border: 1px solid var(--c-line); padding: 1.2rem 1rem 0; display: grid; gap: 0.35rem; align-content: start; box-shadow: 0 30px 60px -30px rgb(13 31 48 / .35); overflow: hidden; }
+  .label__px { display: flex; gap: 3px; }
+  .label__px i { width: 0.45rem; height: 0.45rem; background: #566d2f; }
+  .label__px i:nth-child(2) { background: #e2a33a; }
+  .label__px i:nth-child(3) { background: var(--c-ink); }
+  .label__name { font-family: var(--font-display); font-style: italic; font-size: clamp(1.2rem, 0.9rem + 1.3vw, 1.8rem); line-height: 1; color: #3f5a2a; }
+  .label__sub { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--c-ink-2); }
+  .label__rule { height: 1px; background: #c8b98f; margin-block: 0.3rem; }
+  .label__note { font-size: 0.66rem; color: var(--c-muted); }
+  .label__bottle { width: 72%; justify-self: center; margin-top: 0.4rem; }
+  .board { background: var(--c-white); border: 1px solid var(--c-line); padding: 0.8rem; display: grid; gap: 0.35rem; align-content: start; }
+  .board__title { font-size: 0.6rem; font-weight: 600; color: var(--c-muted); margin-top: 0.2rem; }
+  .board__tags { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+  .board__tags span { font-size: 0.64rem; border: 1px solid var(--c-line); padding: 0.15rem 0.4rem; }
+  .board__sw { display: flex; gap: 0.25rem; }
+  .board__sw i { width: 1.3rem; height: 1.3rem; border: 1px solid var(--c-line); }
+  .board__quote { font-family: var(--font-display); font-style: italic; font-size: 0.8rem; line-height: 1.3; }
+  .post { background: var(--c-white); border: 1px solid var(--c-line); padding: 0.6rem; display: grid; gap: 0.45rem; }
+  .post__img { background: #f3e3c4; padding: 0.3rem 1.2rem 0; }
+  .post__lines { display: grid; gap: 0.3rem; }
+  .post__actions { display: flex; gap: 0.35rem; }
+  .post__actions i { width: 0.55rem; height: 0.55rem; background: var(--c-line); }
+  .post__actions i:first-child { background: var(--c-magenta); }
+
+  /* Dashboard */
+  .dash__head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; padding: 0.9rem 1rem 0.4rem; align-items: end; }
+  .dash__head small { display: block; font-size: 0.6rem; color: var(--c-muted); }
+  .dash__head b { font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; }
+  .dash__chips { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+  .dash__kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; padding: 0.4rem 1rem; }
+  .kpi { border-top: 2px solid var(--c-ink); padding-top: 0.35rem; display: grid; gap: 0.3rem; }
+  .kpi small { font-size: 0.56rem; color: var(--c-muted); line-height: 1.2; }
+  .kpi b { height: 0.5rem; width: 70%; background: var(--c-stone); }
+  .kpi:nth-child(3) { border-top-color: var(--c-magenta); }
+  .dash__chart { position: relative; height: 8.5rem; margin: 0.6rem 1rem; display: flex; align-items: flex-end; gap: 4%; border-bottom: 1px solid var(--c-line); }
+  .dash__chart i { flex: 1; background: var(--c-blue-tint); }
+  .dash__chart i.hi { background: var(--c-blue); }
+  .dash__chart svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .dash__foot { display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; padding: 0.3rem 1rem 0.9rem; font-size: 0.62rem; color: var(--c-muted); }
+  .dash__ok::before { content: ''; display: inline-block; width: 0.4rem; height: 0.4rem; background: var(--c-success); margin-right: 0.3rem; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .mock .dash__chart i { transform-origin: bottom; animation: bar-up 700ms var(--ease-out) both; animation-delay: var(--d); animation-play-state: paused; }
+    .js [data-reveal].is-visible .mock .dash__chart i, .js .mock-in.is-visible .dash__chart i { animation-play-state: running; }
+  }
+  @keyframes bar-up { from { transform: scaleY(0.1); } }
+
+  @media (max-width: 30rem) {
+    .shop { grid-template-columns: 1fr; }
+    .shop__media { max-width: 12rem; }
+    .brand { grid-template-columns: 1fr; }
+    .label { grid-row: auto; }
+    .dash__kpis { grid-template-columns: repeat(2, 1fr); }
+    .float--channels { position: static; margin-top: 0.75rem; max-width: none; }
+    .post { max-width: 15rem; }
+    .post__img { padding-inline: 2.5rem; }
+  }
+</style>

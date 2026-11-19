@@ -23,6 +23,8 @@ export interface Service {
   process: { title: string; text: string }[];
   related: { slugs: ServiceSlug[]; text: string };
   faq: { q: string; a: string }[];
+  /** Sezione "In pratica" con mockup illustrativo [P] */
+  practice: { title: string; text: string };
   cta: { label: string; title: string; text: string };
 }
 
@@ -71,6 +73,10 @@ export const services: Service[] = [
       { title: 'Messa online', text: 'Sviluppo, test e avvio delle vendite.' },
       { title: 'Gestione e crescita', text: 'Assistenza, marketplace e ottimizzazione continua.' },
     ],
+    practice: {
+      title: 'Un negozio che <em>lavora per te</em>.',
+      text: 'Catalogo, schede prodotto, carrello, pagamenti e ordini collegati in un unico sistema, sul tuo sito e sui marketplace.',
+    },
     related: {
       slugs: ['digital-advertising', 'food-marketing'],
       text: 'Un e-commerce rende di più con visite qualificate e un prodotto ben posizionato.',
@@ -131,6 +137,10 @@ export const services: Service[] = [
       { title: 'Contenuti e campagne', text: 'Storytelling, social e relazioni con i media.' },
       { title: 'Verifica', text: 'Misura dei risultati e aggiornamento del piano.' },
     ],
+    practice: {
+      title: 'Un’identità <em>riconoscibile</em>.',
+      text: 'Posizionamento, etichetta, palette e tono di voce: ogni punto di contatto racconta lo stesso valore, dal sito ai social.',
+    },
     related: {
       slugs: ['digital-advertising', 'e-commerce'],
       text: 'Un posizionamento chiaro rende più efficaci campagne e vendite online.',
@@ -190,6 +200,10 @@ export const services: Service[] = [
       { title: 'Campagna', text: 'Canali, messaggi, budget e calendario.' },
       { title: 'Misura e ottimizzazione', text: 'Monitoraggio, report e correzioni continue.' },
     ],
+    practice: {
+      title: 'Ogni campagna, <em>sotto controllo</em>.',
+      text: 'Obiettivo, pubblico e canali in un unico report, aggiornato e leggibile: sai dove va il budget e che cosa produce.',
+    },
     related: {
       slugs: ['e-commerce', 'food-marketing'],
       text: 'Le campagne rendono di più quando portano a un e-commerce efficace e a un messaggio chiaro.',
